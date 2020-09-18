@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should take a snapshot 1`] = `
+<DocumentFragment>
+  <ul
+    class="header"
+    data-testid="header"
+  >
+    <li>
+      <a
+        data-testid="Home"
+        href="/"
+      >
+        Home
+      </a>
+    </li>
+    <li>
+      <a
+        data-testid="Posts"
+        href="/posts"
+      >
+        Posts
+      </a>
+    </li>
+    <li>
+      <a
+        data-testid="Add"
+        href="/posts/add"
+      >
+        Add
+      </a>
+    </li>
+    <li>
+      <a
+        data-testid="Categories"
+        href="/categories"
+      >
+        Categories
+      </a>
+    </li>
+    <li>
+      <a
+        data-testid="Series"
+        href="/series"
+      >
+        Series
+      </a>
+    </li>
+  </ul>
+</DocumentFragment>
+`;

@@ -1,58 +1,78 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link
+  } from "react-router-dom";
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
-}
+import Posts from './components/posts';
+
+
+// Create an array of nav link objects, to loop over and display in nav bar at top of page
+const getNavLinks = () => [
+	{
+		path	: "/",
+		text	: "Home"
+	},
+	{
+		path	: "/posts",
+		text	: "Posts"
+	},
+	{
+		path	: "/posts/add",
+		text	: "Add"
+	},
+	{
+		path	: "/categories",
+		text	: "Categories"
+	},
+	{
+		path	: "/series",
+		text	: "Series"
+	},
+],
+
+getNavHeader = () =>
+	<ul className="header" data-testid="header">
+	{	// Loop through nav links and display at top of page
+		getNavLinks().map(link =>
+			<li key={link.text}>
+				<Link	to			= {link.path}
+						data-testid	= {link.text}>
+					{link.text}
+				</Link>
+			</li>
+		)
+	}
+	</ul>
+,
+
+// Displays our nav links and controls routes from links
+App = () =>
+		<Router>
+			{getNavHeader()}
+
+			{/* React Router controlls paths from nav link clicks */}
+			<Switch>
+				{/* Exact paths keep each sub folder from overriding parent path */}
+				<Route exact	path		= "/" />
+				<Route exact	path		= "/posts"
+								component	= {Posts} />
+				{/* <Route 			path		= "/posts/edit/:id"
+								component	= {Edit} />
+				<Route 			path		= "/posts/add"
+								component	= {Edit} />
+				<Route 			path		= "/categories"
+								component	= {Categories} />
+				<Route exact 	path		= "/series"
+								component	= {Series} />
+				<Route 			path		= "/series/:id"
+								component	= {SeriesManager} /> */}
+			</Switch>
+		</Router>
+;
 
 export default App;
+export {getNavLinks as getLinks } // For testing
