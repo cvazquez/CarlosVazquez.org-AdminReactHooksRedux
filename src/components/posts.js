@@ -23,12 +23,14 @@ export default function Posts() {
 			}),
 			deactivateModal = useDeactivateModal();
 
+	deactivateModal.referenceAPIResponses(setAPIResponses);
+
 	useEffect(() => {
 		let mounted = true;
 
 		if(mounted) {
 			async function getData() {
-				setAPIResponses(await getPosts(setAPIResponses));
+				await getPosts(setAPIResponses);
 			}
 
 			getData();
@@ -36,7 +38,7 @@ export default function Posts() {
 
 		return () => mounted = false;
 
-	}, [setAPIResponses]);
+	}, []);
 
 	// When a post's Deactivate link is clicked
 	function handleDeleteClick(e) {
@@ -45,11 +47,15 @@ export default function Posts() {
 		// Add an opaque overlay over entire body
 		document.body.classList.add('overlay');
 
-		deactivateModal.setModal({
+// need to pass reference to apiResponses.activeEntries
+
+		deactivateModal.setModal(modal => ({
+			...modal,
 			activate	: true,
 			title		: post.title,
-			id			: post.id
-		})
+			id			: post.id,
+			entries		: apiResponses.activeEntries
+		}));
 	}
 
 
@@ -92,8 +98,7 @@ export default function Posts() {
 									<div>
 										<Link	to			= {`/posts/edit/${entry.id}`}
 												key			= {`Entry${entry.id}`}
-												className	= "edit"
-												data-testid	= {entry.id}>
+												className	= "edit">
 											Edit&nbsp;
 										</Link>
 										<span	onClick		= {handleDeleteClick}
