@@ -116,8 +116,3 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
 				referenceAPIResponses
 			}
 }
-
-/* useDeactivateModal.prototype = {
-
-
-} */

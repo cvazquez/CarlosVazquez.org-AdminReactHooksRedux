@@ -47,8 +47,6 @@ export default function Posts() {
 		// Add an opaque overlay over entire body
 		document.body.classList.add('overlay');
 
-// need to pass reference to apiResponses.activeEntries
-
 		deactivateModal.setModal(modal => ({
 			...modal,
 			activate	: true,
