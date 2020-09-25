@@ -20,99 +20,112 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
 	}),
 	setAPIResponses;
 
-	function referenceAPIResponses(APIResponsesReference) {
-		setAPIResponses = APIResponsesReference;
-	}
+	// ********** Public Methods *************
+		function referenceAPIResponses(APIResponsesReference) {
+			setAPIResponses = APIResponsesReference;
+		}
 
-	// The user confirmation deactivation of the post. Send a request to API to deactivate in DB
-	function handleDeleteOKClick() {
-		fetch(`${process.env.REACT_APP_API_URL}/deactivatePostById/${modal.id}`)
-			.then(res => checkAPIResponse(res))
-			.then(result => {
+		function display() {
+			return (<div className={modal.activate ? "lightbox" : "hidden"}>
+						<span	className	= {modal.activate ? "close-x" : "hidden"}
+								onClick		= {handleDeleteCancel}>x</span>
+						<div className="deactivation-confirmation">
+							Confirm Deactivation of "{modal.title}"?
 
-				if(result.deactivated && result.deactivated.affectedRows && result.deactivated.affectedRows > 0) {
-					// Process successfull deactivate response
+							<div className="deactivation-buttons">
+								<button onClick	= {handleDeleteOKClick}>OK</button>
+								<button onClick	= {handleDeleteCancel}>Cancel</button>
+							</div>
 
-					// get current list of deleted ids and append to
-					let deletedIds = modal.ids;
+							{modal.responseInvalid}
+						</div>
+					</div>)
+		}
 
-					deletedIds.push(parseInt(modal.id));
 
-					setModal(modal => ({
-						...modal,
-						// Update list of deleted post ids
-						ids	: deletedIds
-					}));
+	// ********* Private Methods *************
 
-					setAPIResponses(responses => ({
-						...responses,
-						// Remove deleted posts from entries displayed to user
-						activeEntries	: modal.entries.filter(entry => deletedIds.indexOf(entry.id) === -1)
-					}));
+		// The user confirmation deactivation of the post. Send a request to API to deactivate in DB
+		function handleDeleteOKClick() {
+			fetch(`${process.env.REACT_APP_API_URL}/deactivatePostById/${modal.id}`)
+				.then(res => checkAPIResponse(res))
+				.then(result => {
 
-					// Remove delete confirmation modal
-					handleDeleteCancel();
+					if(result.deactivated && result.deactivated.affectedRows && result.deactivated.affectedRows > 0) {
+						// Process successfull deactivate response
 
-				} else {
+						// get current list of deleted ids and append to
+						let deletedIds = modal.ids;
+
+						deletedIds.push(parseInt(modal.id));
+
+						setModal(modal => ({
+							...modal,
+							// Update list of deleted post ids
+							ids	: deletedIds
+						}));
+
+						setAPIResponses(responses => ({
+							...responses,
+							// Remove deleted posts from entries displayed to user
+							activeEntries	: modal.entries.filter(entry => deletedIds.indexOf(entry.id) === -1)
+						}));
+
+						// Remove delete confirmation modal
+						handleDeleteCancel();
+
+					} else {
+						// Post did NOT deactivate successfully. Display message to user.
+						setModal(modal => ({
+							...modal,
+							responseInvalid : "Error deactivating post. Try again."
+						}));
+
+						throw new Error("Deactivate response is invalid. Check API response")
+					}
+				},
+				error => {
 					// Post did NOT deactivate successfully. Display message to user.
 					setModal(modal => ({
 						...modal,
 						responseInvalid : "Error deactivating post. Try again."
 					}));
 
-					throw new Error("Deactivate response is invalid. Check API response")
-				}
-			},
-			error => {
-				// Post did NOT deactivate successfully. Display message to user.
-				setModal(modal => ({
-					...modal,
-					responseInvalid : "Error deactivating post. Try again."
-				}));
+					console.log("No Response from API to deactivate post", error)
 
-				console.log("No Response from API to deactivate post", error)
+				}).catch(error => {
+					// Post did NOT deactivate successfully. Display message to user.
+					setModal(modal => ({
+						...modal,
+						responseInvalid	: "Error deactivating post. Try again."
+					}));
 
-			}).catch(error => {
-				// Post did NOT deactivate successfully. Display message to user.
-				setModal(modal => ({
-					...modal,
-					responseInvalid	: "Error deactivating post. Try again."
-				}));
+					console.error("API Request Fetch Error:", error)
+				})
+		}
 
-				console.error("API Request Fetch Error:", error)
-			})
-	}
+		// removes the delete confirmation overlay/modal and its properties
+		function handleDeleteCancel() {
+			setModal(modal => ({
+				...modal,
+				activate	 	: "",
+				title			: "",
+				id				: null,
+				responseInvalid : null
+			}));
 
-	// removes the delete confirmation overlay/modal and its properties
-	function handleDeleteCancel() {
-		setModal(modal => ({
-			...modal,
-			activate	 	: "",
-			title			: "",
-			id				: null,
-			responseInvalid : null
-		}));
-
-		document.body.classList.remove('overlay');
-	}
+			document.body.classList.remove('overlay');
+		}
 
 	return	{
-				display :	<div className={modal.activate ? "lightbox" : "hidden"}>
-								<span	className	= {modal.activate ? "close-x" : "hidden"}
-										onClick		= {handleDeleteCancel}>x</span>
-								<div className="deactivation-confirmation">
-									Confirm Deactivation of "{modal.title}"?
-
-									<div className="deactivation-buttons">
-										<button onClick	= {handleDeleteOKClick}>OK</button>
-										<button onClick	= {handleDeleteCancel}>Cancel</button>
-									</div>
-
-									{modal.responseInvalid}
-								</div>
-							</div>,
+				display,
 				setModal,
 				modal,
 				referenceAPIResponses
 			}
 }
+
+/* useDeactivateModal.prototype = {
+
+
+} */

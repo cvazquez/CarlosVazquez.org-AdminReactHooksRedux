@@ -74,7 +74,7 @@ export default function Posts() {
 		// display list of posts to edit/deactivate
 		return <>
 				{	// When Deactivate is clicked, display the confirmation modal
-					deactivateModal.display
+					deactivateModal.display()
 				}
 				{demoMessage}
 

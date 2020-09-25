@@ -8,6 +8,7 @@ import {
 import './App.css';
 
 import Posts from './components/posts';
+import Edit from './components/edit';
 
 
 // Create an array of nav link objects, to loop over and display in nav bar at top of page
@@ -60,9 +61,9 @@ App = () =>
 				<Route exact	path		= "/" />
 				<Route exact	path		= "/posts"
 								component	= {Posts} />
-				{/* <Route 			path		= "/posts/edit/:id"
+				<Route 			path		= "/posts/edit/:id"
 								component	= {Edit} />
-				<Route 			path		= "/posts/add"
+				{/* <Route 			path		= "/posts/add"
 								component	= {Edit} />
 				<Route 			path		= "/categories"
 								component	= {Categories} />
