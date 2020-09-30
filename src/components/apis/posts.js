@@ -2,7 +2,7 @@ import { checkAPIResponse } from '../../helpers/api'
 
 // API request blog posts, to display and edit
 export function getPosts(setAPIResponses) {
-//	return new Promise(resolve => {
+	return new Promise(resolve => {
 		fetch(`${process.env.REACT_APP_API_URL}/getPosts`)
 		.then(res => checkAPIResponse(res))
 		.then(
@@ -40,6 +40,6 @@ export function getPosts(setAPIResponses) {
 
 			console.error("API Request Fetch Error:", error)
 		})
-//	})
+	})
 
 }

@@ -6,10 +6,11 @@
 		 * Add ability to sort title, id and date columns
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'
 import useDeactivateModal from "./modals/useDeactivate";
 import { getPosts } from "./apis/posts";
+import { showDemoMessage } from '../helpers/login';
 
 export default function Posts() {
 	const	[apiResponses, setAPIResponses] = useState({
@@ -23,22 +24,22 @@ export default function Posts() {
 			}),
 			deactivateModal = useDeactivateModal();
 
+	let _isMounted			= useRef(false);
+
 	deactivateModal.referenceAPIResponses(setAPIResponses);
 
 	useEffect(() => {
-		let mounted = true;
-
-		if(mounted) {
+		if(!_isMounted.current) {
 			async function getData() {
 				await getPosts(setAPIResponses);
 			}
 
 			getData();
+			_isMounted.current = true;
 		}
 
-		return () => mounted = false;
-
-	}, []);
+		return () => _isMounted.current;
+	})
 
 	// When a post's Deactivate link is clicked
 	function handleDeleteClick(e) {
@@ -69,14 +70,12 @@ export default function Posts() {
 
 	} else {
 		// API call response is successful. Display list of posts.
-		const demoMessage = !apiResponses.isAdmin && <div className="alert alert-danger">Demo Mode</div>;
-
 		// display list of posts to edit/deactivate
 		return <>
 				{	// When Deactivate is clicked, display the confirmation modal
 					deactivateModal.display()
 				}
-				{demoMessage}
+				{showDemoMessage(!apiResponses.isAdmin)}
 
 				<div className="grid-container posts">
 					<div className="grid-header-wrapper">

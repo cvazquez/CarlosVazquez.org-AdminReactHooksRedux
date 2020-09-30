@@ -63,9 +63,9 @@ App = () =>
 								component	= {Posts} />
 				<Route 			path		= "/posts/edit/:id"
 								component	= {Edit} />
-				{/* <Route 			path		= "/posts/add"
+				<Route 			path		= "/posts/add"
 								component	= {Edit} />
-				<Route 			path		= "/categories"
+				{/* <Route 			path		= "/categories"
 								component	= {Categories} />
 				<Route exact 	path		= "/series"
 								component	= {Series} />

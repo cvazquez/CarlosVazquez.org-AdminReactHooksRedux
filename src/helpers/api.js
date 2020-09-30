@@ -18,23 +18,26 @@ function checkAPIResponse(res) {
 	}
 }
 
-function setSavedPostStatuses(name, type, json, that) {
+function setSavedPostStatuses(name, type, json, setStateHandler) {
 	const	status	= json[type];
 
 	if(status) {
 		if(status.affectedRows && status.affectedRows > 0) {
-			that.setState({
+			setStateHandler(state => ({
+				...state,
 				[type]				: true,
 				[type + "Status"]	: <div className="alert alert-success">{name}</div>
-			});
+			}));
 		} else if(status.failed) {
 			const message = status.message ? status.message : (type + " Saving Error");
-			that.setState({
+
+			setStateHandler(state => ({
+				...state,
 				[type]				:	false,
 				[type + "Status"]	:	<div className="alert alert-danger">
 											{message}
 										</div>
-			});
+			}));
 
 			return message; // return which status failed
 		}

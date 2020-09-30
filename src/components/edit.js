@@ -2,22 +2,18 @@
 	Form to edit and add blog posts
 */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Form from "./form";
 import { checkAPIResponse, setSavedPostStatuses } from '../helpers/api'
 import { getlistItemDisplay } from '../helpers/form'
+import { showDemoMessage } from '../helpers/login';
 
 export default function Edit(props) {
-	let _isMounted			= useRef(false);
 	const	intervalCountDown	= 5,
 			date				= new Date(),
-
-			// A new post will have a null value
-			id					= props.match ? props.match.params.id : null,
-
 			[apiResponsesState, setAPIResponsesState] = useState({
 				// Loading Async Init
-				id,
+				id								: props.match ? props.match.params.id : null, // A new post will have a null value
 				error							: null,
 				isLoaded						: false,
 				isAdmin							: true,
@@ -33,7 +29,7 @@ export default function Edit(props) {
 				categoriesSelectedLowerCased	: [],
 				categoryOverlay					: null
 			}),
-			[series, setSeries] = useState({
+			[seriesState, setSeriesState] = useState({
 				// Series
 				series							: [],
 				seriesByName					: {},
@@ -93,80 +89,104 @@ export default function Edit(props) {
 				saveDraftStatus					: null
 			});
 
-
-		useEffect(() => {
-			if(!_isMounted.current) {
-				if(id) {
-					const getData = async () => {
-						const data = await getPost();
-
-						setAPIResponsesState(data.apiResponse);
-						setCategoriesState(data.categories);
-						setSeries(data.series);
-						setFormState(data.form);
-						setIndexedStates(data.results.series, data.results.categories);
-					}
-
-					getData();
-				}
-
-				_isMounted.current = true;
-			}
-
-			//return () => _isMounted = false;
-		}, []);
-
-		useEffect(() => {
-			if(!_isMounted.current) {
-				if(!id) {
-					// New Page refresh
-					getNewPost();
-					setPublishAtDate();
-				}
-
-				_isMounted.current = true;
-			}
-			//return () => _isMounted = false;
-		}, []);
+			let _isMounted			= useRef(false),
+				_isMountedAdd		= useRef(false);
 
 
 	// Common indexed states
-	function setIndexedStates(series, categories) {
-		const	seriesByName		= {},
-				seriesById			= [],
-				categoriesByName	= {},
-				categoriesById		= [];
+	const updateIndexedStates = useCallback(
+		(series, categories) => {
+			const	seriesByName		= {},
+					seriesById			= [],
+					categoriesByName	= {},
+					categoriesById		= [];
 
-				// Access all series by name and id (reverse lookup)
-		series.forEach(item => {
-			seriesByName[item.name.toLowerCase()] = item.id;
-			seriesById[item.id] = item.name; // don't change case. Displays in series search overlay results
-		});
+			// Access all series by name and id (reverse lookup)
+			series.series.forEach(item => {
+				seriesByName[item.name.toLowerCase()] = item.id;
+				seriesById[item.id] = item.name; // don't change case. Displays in series search overlay results
+			});
 
-		// Access all categories by name and id (reverse lookup)
-		categories.forEach(item => {
-			categoriesByName[item.name.toLowerCase()] = item.id;
-			categoriesById[item.id] = item.name; // don't change case. Displays in category search overlay results
-		});
+			// Access all categories by name and id (reverse lookup)
+			categories.categories.forEach(item => {
+				categoriesByName[item.name.toLowerCase()] = item.id;
+				categoriesById[item.id] = item.name; // don't change case. Displays in category search overlay results
+			});
 
-		//if(_isMounted) {
-			setSeries(state => ({
+			setSeriesState(state => ({
 				...state,
 				seriesByName,
 				seriesById
 			}));
 
-			setCategoriesState({
-				...categoriesState,
-				categoriesByName : categoriesByName,
-				categoriesById : categoriesById
-			});
-		//}
-	}
+			setCategoriesState(state => ({
+				...state,
+				categoriesByName,
+				categoriesById
+			}));
+		},[]
+	)
+
+	// Edit existing Post
+	useEffect(() => {
+		if(!_isMounted.current) {
+			if(apiResponsesState.id) {
+				const getData = async () => {
+					const data = await getPost(apiResponsesState.id);
+
+					setAPIResponsesState(data.apiResponse);
+					setFormState(data.form);
+					setCategoriesState(state => ({
+						...state,
+						...data.categories
+					}));
+					setSeriesState(state => ({
+						...state,
+						...data.series
+					}));
+					updateIndexedStates(data.series, data.categories);
+				}
+
+				getData();
+			}
+
+			_isMounted.current = true;
+		}
+
+		return () => _isMounted.current;
+	}, [apiResponsesState.id, getPost, updateIndexedStates]);
+
+	// Add a new post
+	useEffect(() => {
+		if(!_isMountedAdd.current) {
+			if(!apiResponsesState.id) {
+				async function getNewData() {
+					// New Page refresh
+					getNewPost();
+					setPublishAtDate();
+				}
+
+				getNewData();
+			}
+
+			_isMountedAdd.current = true;
+		}
+		return () => _isMountedAdd.current;
+	}, [apiResponsesState.id, getNewPost, setPublishAtDate]);
+
+	// Update publish date if any of the publish date fields update
+	useEffect(() => {
+		setPublishAtDate();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [	formState.publishYear,
+			formState.publishMonth,
+			formState.publishDay,
+			formState.publishHour,
+			formState.publishMinute]);
 
 	// Retrieve existing post to edit
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	function getPost() {
+	function getPost(id) {
 		return new Promise(resolve => {
 			fetch(`${process.env.REACT_APP_API_URL}/getPost/` + id)
 			.then(res => checkAPIResponse(res))
@@ -206,7 +226,6 @@ export default function Edit(props) {
 								// Create an array of html list elements to display series
 								seriesSelectedDisplay.push(getlistItemDisplay(series.id, series.name, handleSeriesClickRemove));
 							});
-
 							resolve({
 								results : {
 									series		: result.series,
@@ -226,7 +245,7 @@ export default function Edit(props) {
 									categoryOverlay					: null
 								},
 								series : {
-									...series,
+									...seriesState,
 									series							: result.series,
 									seriesSelectedDisplay
 								},
@@ -288,7 +307,7 @@ export default function Edit(props) {
 					if(result.series && result.categories && result.flickrSets) {
 						const	tempForm = formState;
 
-						setIndexedStates(result.series, result.categories);
+						updateIndexedStates({series : result.series}, {categories: result.categories});
 
 						tempForm.flickrSets = result.flickrSets;
 
@@ -299,19 +318,21 @@ export default function Edit(props) {
 								isAdmin		: result.isAdmin}));
 
 
-							setSeries(state => ({
+							setSeriesState(state => ({
 								...state,
 								series	: result.series
 							}));
 
 							setCategoriesState(_state => ({
+								..._state,
 								categories			: result.categories,
 								categoryOverlay		: null
 							}));
 
 							setFormState(state => ({
 								...state,
-								form	: tempForm
+								form		: tempForm,
+								flickrSets	: result.flickrSets || []
 							}));
 
 						//}
@@ -346,24 +367,36 @@ export default function Edit(props) {
 		setFormState(state => ({
 			...state,
 			content
-			/* formState	: {
-				...formState,
-				content
-			} */
 		}));
 	}
 
 	// Format the publish date form fields into a valid date format
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	function setPublishAtDate() {
+		let publishDay = formState.publishDay;
+
+		// Check and fix if days are over Month Days limit
+		if(formState.publishYear > 0 && formState.publishMonth > 0) {
+			const lastDay = new Date(formState.publishYear, formState.publishMonth, 0).getDate();
+
+			if(lastDay < publishDay) {
+				publishDay = lastDay;
+
+				setFormState(state => ({
+					...state,
+					publishDay
+				}));
+			}
+		}
+
 		const publishAt =	formState.publishYear +
 							"-" +
 							(formState.publishMonth < 10 ? "0" : "") +
 							+
 							formState.publishMonth +
 							"-" +
-							(formState.publishDay < 10 ? "0" : "") +
-							formState.publishDay +
+							(publishDay < 10 ? "0" : "") +
+							publishDay +
 							" " +
 							(formState.publishHour < 10 ? "0" : "") +
 							formState.publishHour +
@@ -375,26 +408,18 @@ export default function Edit(props) {
 		setFormState(state => ({
 			...state,
 			publishAt
-			/* form	: {
-				...formState,
-				publishAt
-			} */
 		}));
 	}
 
 	// Set form fields state
 	function handleTextUpdate(event) {
 		const	fieldName	= event.target.name;
+		event.persist();
 
-		setFormState({
-			...formState,
+		setFormState(state => ({
+			...state,
 			[fieldName] : event.target.value
-		});
-
-		// Separate function for publish at field, to format a proper date
-		if(["publishYear", "publishMonth", "publishDay", "publishHour", "publishMinute"].indexOf(fieldName) > -1) {
-			setPublishAtDate();
-		}
+		}));
 	}
 
 	// Trigger when the user clicks to remove existing Categories applied to the post
@@ -443,8 +468,8 @@ export default function Edit(props) {
 		}
 
 		// Update state of series displayed to user and submitted in form
-		setSeries({
-			...series,
+		setSeriesState({
+			...seriesState,
 			seriesSelectedDisplay
 		});
 
@@ -506,7 +531,7 @@ export default function Edit(props) {
 										onClick		= {handleCategoryClick}>
 										{result}
 									</li>
-								)) : "No Results Founds"
+								)) : "No Results Found"
 						}
 					</ul>
 				</div>
@@ -534,11 +559,11 @@ export default function Edit(props) {
 	}
 
 	function handleSeriesSelection(e) {
-		let seriesSelectedDisplay 	= series.seriesSelectedDisplay,
+		let seriesSelectedDisplay 	= seriesState.seriesSelectedDisplay,
 			postSeriesSelected		= formState.postSeriesSelected,
 			seriesNameSelected		= formState.seriesNameSelected,
 			id						= e.target.value,
-			name					= series.seriesById[id];
+			name					= seriesState.seriesById[id];
 
 		seriesSelectedDisplay.push(getlistItemDisplay(id, name, handleSeriesClickRemove));
 
@@ -548,16 +573,16 @@ export default function Edit(props) {
 
 		seriesNameSelected.push(name);
 
-		setSeries(state => ({
-			...state,
+		setSeriesState({
+			...seriesState,
 			seriesSelectedDisplay
-		}));
+		});
 
-		setFormState(state => ({
-			...state,
+		setFormState({
+			...formState,
 			postSeriesSelected,
 			seriesNameSelected
-		}));
+		});
 	}
 
 	const getAlertSaveStatus = postAdded =>
@@ -581,11 +606,11 @@ export default function Edit(props) {
 				let savedPostStatuses = new Set();
 
 				// Display alert messages for components of form
-				savedPostStatuses.add(setSavedPostStatuses("Deleted Post Categories", "deletedPostCategories", json, this));
-				savedPostStatuses.add(setSavedPostStatuses("Saved Post Categories", "savedPostCategories", json, this));
-				savedPostStatuses.add(setSavedPostStatuses("Saved Flickr Set", "savedPostFlickrSet", json, this));
-				savedPostStatuses.add(setSavedPostStatuses("Saved Post Series", "savedPostSeries", json, this));
-				savedPostStatuses.add(setSavedPostStatuses("Deleted Post Series", "deletedPostSeries", json, this));
+				savedPostStatuses.add(setSavedPostStatuses("Deleted Post Categories", "deletedPostCategories", json, setAPIStatuses));
+				savedPostStatuses.add(setSavedPostStatuses("Saved Post Categories", "savedPostCategories", json, setAPIStatuses));
+				savedPostStatuses.add(setSavedPostStatuses("Saved Flickr Set", "savedPostFlickrSet", json, setAPIStatuses));
+				savedPostStatuses.add(setSavedPostStatuses("Saved Post Series", "savedPostSeries", json, setAPIStatuses));
+				savedPostStatuses.add(setSavedPostStatuses("Deleted Post Series", "deletedPostSeries", json, setAPIStatuses));
 				savedPostStatuses.delete(null);
 
 				// Check status of main elements of form (no including components above)
@@ -627,24 +652,24 @@ export default function Edit(props) {
 						}, 5000);
 					} else {
 						// Edit saved, clear out success message in 5 seconds
-						setTimeout(() => this.setState({
-							saveStatus	: null
-						}), 5000);
+						setTimeout(() => setAPIStatuses(state => ({
+							...state,
+							saveStatus : null
+						})), 5000);
 					}
 
 				} else {
 					// Post was not saved successfully. Display error return or unknown for none
-					this.setState({
+					setAPIStatuses(state => ({
+						...state,
 						updatePosted	: false,
 						saveStatus		: 	<div className="alert alert-danger">Error Saving Post.
 												{	json.savePost && json.savePost.message && json.savePost.message.length ?
 														" " + json.savePost.message : " Unknown Error."
 												}
 											</div>
-					});
+					}));
 				}
-
-
 			},
 			error => console.log("No Response from API saving post", error)
 		).catch(error => console.error("API Request Fetch Error saving post:", error));
@@ -652,9 +677,10 @@ export default function Edit(props) {
 
 	function handleSaveDraft() {
 
-		this.setState({
+		setAPIStatuses(state => ({
+			...state,
 			saveDraftStatus	: <div className="alert alert-success">Saving draft...</div>
-		})
+		}))
 
 		// Save draft to database
 		fetch(`${process.env.REACT_APP_API_URL}/saveDraft`, {
@@ -680,14 +706,12 @@ export default function Edit(props) {
 	}
 
 	function post() {
-		const	demoMessage = !apiResponsesState.isAdmin && <div className="alert alert-danger">Demo Mode</div>;
-
 		if (apiResponsesState.error) {
 			return <div>Error: {apiResponsesState.error.message}</div>;
 		  } else if (!apiResponsesState.isLoaded) {
 			return <div>Loading...</div>;
 		  } else {
-			return <>{demoMessage}
+			return <>{showDemoMessage(!apiResponsesState.isAdmin)}
 					<Form	form							= {formState}
 
 							// Handlers
@@ -703,8 +727,8 @@ export default function Edit(props) {
 							categoryNamesSelectedDisplay	= {categoriesState.categoryNamesSelectedDisplay}
 
 							// Series Selection
-							series							= {series.series}
-							seriesSelectedDisplay			= {series.seriesSelectedDisplay}
+							series							= {seriesState.series}
+							seriesSelectedDisplay			= {seriesState.seriesSelectedDisplay}
 
 							// Save Statuses
 							saveStatus						= {apiStatuses.saveStatus}
