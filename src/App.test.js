@@ -95,7 +95,7 @@ test('Has Post Text', () => {
 
 		expect(posts).toHaveTextContent('Title')
 	})
-/*
+
 	// /posts/add
 	it('should navigate to the add page loading', ()=> {
 		const { container, getByTestId } = renderWithRouter(<App />)
@@ -181,4 +181,3 @@ test('Has Post Text', () => {
 		expect(series).toHaveClass('series')
 		expect(seriesManage).toHaveClass('series-manage-click')
 	})
-*/

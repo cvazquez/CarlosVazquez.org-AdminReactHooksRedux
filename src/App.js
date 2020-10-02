@@ -10,7 +10,7 @@ import './App.css';
 import Posts from './components/posts';
 import Edit from './components/edit';
 import Categories from './components/categories';
-
+import SelectOptions from './components/selectOptions';
 
 // Create an array of nav link objects, to loop over and display in nav bar at top of page
 const getNavLinks = () => [
@@ -68,9 +68,10 @@ App = () =>
 								component	= {Edit} />
 				<Route 			path		= "/categories"
 								component	= {Categories} />
-				{/* <Route exact 	path		= "/series"
-								component	= {Series} />
-				<Route 			path		= "/series/:id"
+				{<Route exact 	path		= "/series">
+					<SelectOptions	name = "Series" />
+				</Route>
+				/*<Route 			path		= "/series/:id"
 								component	= {SeriesManager} /> */}
 			</Switch>
 		</Router>

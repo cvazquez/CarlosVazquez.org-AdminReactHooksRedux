@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { checkAPIResponse } from '../helpers/api'
 import { showDemoMessage } from '../helpers/login';
 
-
 export default function Categories(props) {
 		// Solves a Jest error
 		const	_isMounted			= useRef(false),

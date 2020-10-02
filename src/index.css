@@ -289,7 +289,8 @@ input[name="submitPost"] {
 /****** Category Names Selected ******/
 
 ul.category-names-selected,
-ul.series-names-selected {
+ul.series-names-selected,
+ul.option-names-selected {
 	list-style-type	: none;
 	margin-top		: 0px;
 	margin-left		: -25px;
@@ -297,7 +298,8 @@ ul.series-names-selected {
 }
 
 ul.category-names-selected li,
-ul.series-names-selected li {
+ul.series-names-selected li,
+ul.option-names-selected li {
 	padding: 5px;
 	border: 1px solid var(--border-color);
 	border-radius: 5px;
@@ -305,14 +307,16 @@ ul.series-names-selected li {
 }
 
 ul.category-names-selected li span.close,
-ul.series-names-selected li span.close {
+ul.series-names-selected li span.close,
+ul.option-names-selected li span.close {
 	float: right;
 	display: block;
 	margin-right: 2%;
 }
 
 ul.category-names-selected li span.close:hover,
-ul.series-names-selected li span.close:hover {
+ul.series-names-selected li span.close:hover,
+ul.option-names-selected li span.close:hover {
 	cursor: pointer;
 }
 
@@ -349,7 +353,8 @@ ul.series-names-selected li span.close:hover {
 	animation: 1s linear infinite condemned_blink_effect;
 }
 
-.lists .category.saved {
+.lists .category.saved,
+.lists .option.saved {
 	background-color: var(--save-confirmation-color);
 }
 

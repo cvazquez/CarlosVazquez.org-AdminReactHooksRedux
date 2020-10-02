@@ -89,13 +89,15 @@ export default function Posts() {
 					{	// Loop through list of posts and display, with id, title, dates and links to Edit/Deactivate,
 						apiResponses.activeEntries.map(entry => (
 							<React.Fragment key={entry.id}>
-								<div className="grid-row-wrapper">
+								<div className="grid-row-wrapper"
+										>
 									<div>{entry.id}</div>
 									<div>{entry.title}</div>
 									<div>
 										<Link	to			= {`/posts/edit/${entry.id}`}
 												key			= {`Entry${entry.id}`}
-												className	= "edit">
+												className	= "edit"
+												data-testid	= {entry.id}>
 											Edit&nbsp;
 										</Link>
 										<span	onClick		= {handleDeleteClick}
