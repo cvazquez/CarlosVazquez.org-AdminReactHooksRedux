@@ -124,7 +124,7 @@ export default function Edit(props) {
 				categoriesByName,
 				categoriesById
 			}));
-		},[]
+		}, []
 	)
 
 	// Edit existing Post

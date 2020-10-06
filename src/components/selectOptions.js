@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { checkAPIResponse } from '../helpers/api'
 import { showDemoMessage } from '../helpers/login';
+import { Link } from 'react-router-dom'
 
 export default function SelectOptions(props) {
 
 		// Solves a Jest error
 		const	nameLower = props.name.toLowerCase(),
-				_isMounted			= useRef(false),
+				namePluralLower = props.namePlural.toLowerCase(),
+				//_isMounted			= useRef(false),
 				[apiResponseState, setAPIResponseState] = useState({
 					// api async call results
 					error				: undefined,
@@ -26,26 +28,22 @@ export default function SelectOptions(props) {
 
 					// Toggles update alert className of new option
 					newOptionSaveStatus : null
-				}),
-				optionsByIdGlobal = []; // use for before and after state comparisons when saving
+				});
 
 		// Request categories to display and edit
 		function getOptions() {
 			return new Promise(resolve => {
-				fetch(`${process.env.REACT_APP_API_URL}/get${props.name}`)
+				fetch(`${process.env.REACT_APP_API_URL}/get${props.namePlural}`)
 					.then(res => checkAPIResponse(res))
 					.then(
 						result => {
-							if(result[nameLower] && Array.isArray(result[nameLower])) {
+							if(result[namePluralLower] && Array.isArray(result[namePluralLower])) {
 								const 	optionsByName	= {},
 										optionsById		= {};
 
-								result[nameLower].forEach(item => {
+								result[namePluralLower].forEach(item => {
 									// Get a categories id by name
 									optionsByName[item.name] = item.id;
-
-									// Stores initial state of option id's name value, for comparison when value updates are made
-									optionsByIdGlobal[item.id] = item.name;
 
 									// Get a categories name by id
 									optionsById[item.id] = {
@@ -88,30 +86,25 @@ export default function SelectOptions(props) {
 				})
 		}
 
-		useEffect(() => {
-			if(!_isMounted.current) {
+		useLayoutEffect(() => {
+			async function getData() {
+				const data = await getOptions();
 
-				async function getData() {
-					const data = await getOptions();
+				setAPIResponseState(state => ({
+					...state,
+					...data.apiStates
+				}));
 
-					setAPIResponseState(state => ({
-						...state,
-						...data.apiStates
-					}));
-
-					setOptionsState(state => ({
-						...state,
-						...data.optionsStates
-					}));
-				}
-
-				getData();
-
-				_isMounted.current = true;
+				setOptionsState(state => ({
+					...state,
+					...data.optionsStates
+				}));
 			}
 
-			return () => _isMounted.current;
-		});
+			getData();
+
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [props.name]);
 
 		function handleTextUpdate(e) {
 			const	id				= e.currentTarget.dataset.id,
@@ -136,8 +129,6 @@ export default function SelectOptions(props) {
 				if(result.affectedRows && result.affectedRows > 0) {
 
 					optionsById[id].saveStatus = <span className='blink'>SAVED!</span>;
-					optionsByIdGlobal[id] = name;
-
 					setOptionsState(state => ({
 						...state,
 						optionsById
@@ -185,16 +176,17 @@ export default function SelectOptions(props) {
 			let optionsById = optionsState.optionsById;
 
 			// Option name didn't update, no need to save. Exit function
-			if(optionsByIdGlobal[id] === name) return;
+			if(optionsState.optionsById[id].name === name) return;
 
 			updateOption(id, name, optionsById)
 		}
 
 		function handleNewOption(e) {
+			const optionValue = e.target.value;
 			// Normal react text field value update
 			setOptionsState(state => ({
 				...state,
-				newOption : e.target.value
+				newOption : optionValue
 			}));
 		}
 
@@ -206,7 +198,9 @@ export default function SelectOptions(props) {
 			})
 			.then(res => checkAPIResponse(res))
 			.then( result => {
-				if(result.added[props.name].affectedRows && result.added[props.name].affectedRows > 0) {
+				const optionName = "added" + props.name;
+
+				if(result[optionName].affectedRows && result[optionName].affectedRows > 0) {
 
 					// Add a blinking Saved message next to new option
 					setOptionsState(state => ({
@@ -216,7 +210,7 @@ export default function SelectOptions(props) {
 						newOption				: ""
 					}));
 
-					getOptions();
+				//	getOptions();
 
 					setTimeout(() => {
 						// Clear saved message
@@ -242,7 +236,16 @@ export default function SelectOptions(props) {
 					newOptionSaveStatus : <span className='blink'>FAILED SAVING!</span>
 				}));
 
-			}).catch(error => console.log(`Fetch Promise Error Saving New ${props.name}`));
+			}).catch(error => {
+				setOptionsState(state => ({
+					...state,
+					error,
+					newOptionSaveStatus : <span className='blink'>FAILED SAVING!</span>
+				}));
+
+				console.log(`Fetch Promise Error Saving New ${props.name} : ${error.message}`)
+				console.log(error)
+			});
 		}
 
 		function handleNewOptionSubmit(e) {
@@ -262,14 +265,13 @@ export default function SelectOptions(props) {
 						<div className="lists">
 							{/* Form and field to save a new option */}
 							<form action="POST" onSubmit={handleNewOptionSubmit}>
-								<input	className	= "series"
-										type		= "text"
+								<input	type		= "text"
 										value		= {optionsState.newOption}
 										onChange	= {handleNewOption}
 										placeholder	= {`Add a New ${props.name}`} />
 
 								<button type="button" onClick={handleNewOptionSubmit}>Add</button>
-								<span className="new-series-save-status">{optionsState.newOptionSaveStatus}</span>
+								{optionsState.newOptionSaveStatus}
 							</form>
 
 							{/* Lookp through existing list of categories to edit */}
@@ -282,7 +284,20 @@ export default function SelectOptions(props) {
 											data-testid	= {optionsState.optionsById[optionsState.optionsByName[key]].name}
 											onChange	= {handleTextUpdate}
 											onBlur		= {handleOptionBlur} />
-									<span className="series-save-status">{optionsState.optionsById[optionsState.optionsByName[key]].saveStatus}</span>
+									{optionsState.optionsById[optionsState.optionsByName[key]].saveStatus}
+
+									{props.name === "Series" &&
+										<span className="series-manage">
+											[<Link	to			=	{{
+																		pathname	: `/series/${optionsState.optionsByName[key]}`,
+																		state		: { name : optionsState.optionsById[optionsState.optionsByName[key]].name }
+																	}}
+													className	= "series-manage-click"
+													data-testid	= {optionsState.optionsById[optionsState.optionsByName[key]].name + "_manage"}>
+												manage
+											</Link>]
+										</span>
+									}
 								</div>
 							)}
 						</div>

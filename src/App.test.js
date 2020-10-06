@@ -158,7 +158,7 @@ test('Has Post Text', () => {
 
 		const posts = await waitForElement(() => getByTestId("About Me"))
 
-		expect(posts).toHaveClass('category')
+		expect(posts).toHaveClass('Categories')
 	})
 
 	// /series
@@ -178,6 +178,6 @@ test('Has Post Text', () => {
 		const	series			= await waitForElement(() => getByTestId("Patagonia")),
 				seriesManage	= getByTestId("Patagonia_manage");
 
-		expect(series).toHaveClass('series')
+		expect(series).toHaveClass('Series')
 		expect(seriesManage).toHaveClass('series-manage-click')
 	})
