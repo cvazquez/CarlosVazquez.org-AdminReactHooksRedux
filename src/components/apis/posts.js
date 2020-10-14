@@ -9,12 +9,11 @@ export function getPosts(setAPIResponses) {
 			result => {
 				if(result.posts && Array.isArray(result.posts)) {
 					// Update render state to display active entries only and replace loading text
-					setAPIResponses(state => ({
-						...state,
+					resolve({
 						isLoaded		: true,
 						activeEntries	: result.posts.filter(entry => entry.deletedAt === null),
 						isAdmin			: result.isAdmin
-					}));
+					});
 
 				} else {
 					throw new Error("Result posts response is invalid. Check API response")
@@ -22,21 +21,19 @@ export function getPosts(setAPIResponses) {
 
 			},
 			error => {
-				setAPIResponses(state => ({
-					...state,
+				resolve({
 					isLoaded	: false,
 					error
-				}));
+				});
 
 				console.log("No Response from API to retrieve posts", error)
 			}
 		)
 		.catch(error => {
-			setAPIResponses(state => ({
-				...state,
+			resolve({
 				isLoaded	: false,
 				error
-			}));
+			});
 
 			console.error("API Request Fetch Error:", error)
 		})

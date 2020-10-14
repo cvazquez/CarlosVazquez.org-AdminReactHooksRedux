@@ -262,6 +262,7 @@ export default function SelectOptions(props) {
 			} else {
 				return <div>
 						{showDemoMessage(!apiResponseState.isAdmin)}
+
 						<div className="lists">
 							{/* Form and field to save a new option */}
 							<form action="POST" onSubmit={handleNewOptionSubmit}>

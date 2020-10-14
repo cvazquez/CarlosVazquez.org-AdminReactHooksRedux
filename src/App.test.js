@@ -158,7 +158,7 @@ test('Has Post Text', () => {
 
 		const posts = await waitForElement(() => getByTestId("About Me"))
 
-		expect(posts).toHaveClass('Categories')
+		expect(posts).toHaveClass('Category')
 	})
 
 	// /series

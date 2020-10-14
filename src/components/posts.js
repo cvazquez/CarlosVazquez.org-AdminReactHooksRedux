@@ -22,24 +22,36 @@ export default function Posts() {
 				// Posts loaded from API call
 				activeEntries	: []
 			}),
-			deactivateModal = useDeactivateModal();
-
-	let _isMounted			= useRef(false);
+			deactivateModal = useDeactivateModal(),
+			unMounted			= useRef(false);
 
 	deactivateModal.referenceAPIResponses(setAPIResponses);
 
 	useEffect(() => {
-		if(!_isMounted.current) {
 			async function getData() {
-				await getPosts(setAPIResponses);
+				const data = await getPosts(setAPIResponses);
+
+				data.isLoaded ?
+					setAPIResponses(state => ({
+						...state,
+						isLoaded		: data.isLoaded,
+						activeEntries	: data.activeEntries,
+						isAdmin			: data.isAdmin
+					}))
+					:
+					setAPIResponses(state => ({
+						...state,
+						isLoaded	: false,
+						error		: data.error
+					}));
 			}
 
-			getData();
-			_isMounted.current = true;
-		}
+			if(!unMounted.current) {
+				getData();
+			}
 
-		return () => _isMounted.current;
-	})
+		return () => unMounted.current = true;
+	}, [])
 
 	// When a post's Deactivate link is clicked
 	function handleDeleteClick(e) {

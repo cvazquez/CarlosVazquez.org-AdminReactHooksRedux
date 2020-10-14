@@ -171,6 +171,7 @@ export default function SeriesManager(props) {
 			*/
 			return <div className="series-manager">
 						{showDemoMessage(!apiResponseState.isAdmin)}
+
 						<div className="series-manager-name">{seriesState.name}</div>
 
 						<ul className="series-sequences">
