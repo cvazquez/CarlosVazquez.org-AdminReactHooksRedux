@@ -29,7 +29,7 @@ export default function Posts() {
 
 	useEffect(() => {
 			async function getData() {
-				const data = await getPosts(setAPIResponses);
+				const data = await getPosts();
 
 				data.isLoaded ?
 					setAPIResponses(state => ({

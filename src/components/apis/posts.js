@@ -1,7 +1,7 @@
 import { checkAPIResponse } from '../../helpers/api'
 
 // API request blog posts, to display and edit
-export function getPosts(setAPIResponses) {
+export function getPosts() {
 	return new Promise(resolve => {
 		fetch(`${process.env.REACT_APP_API_URL}/getPosts`)
 		.then(res => checkAPIResponse(res))
