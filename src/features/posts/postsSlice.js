@@ -3,18 +3,21 @@ import { getPosts } from "../../components/apis/posts";
 
 
 // Current state of tabs editing
-const iniialState = {
-	posts	: []
+const initialState = {
+	isLoaded	: false,
+	entries		: [],
+	isAdmin		: false
 };
 
-export default function postsReducer(state = iniialState, action) {
+export default function postsReducer(state = initialState, action) {
 	switch(action.type) {
 		case "posts/get":
+
 			return {
 				...state,
-				posts	: [
-					...state.posts
-				]
+				isLoaded	: action.payload.isLoaded,
+				entries		: action.payload.activeEntries,
+				isAdmin		: action.payload.isAdmin
 			}
 		default:
 			return state
@@ -24,20 +27,13 @@ export default function postsReducer(state = iniialState, action) {
 export async function fetchPosts(dispatch, getState) {
 	const data = await getPosts();
 
-	data.isLoaded ? console.log("loaded") : console.log("not loaded");
 
-	dispatch({ type: 'posts/get', payload: data.activeEntries })
+	//dispatch({ type: 'posts/get', payload : data.isLoaded ? data.activeEntries : [] })
+	dispatch({ type: 'posts/get', payload : data })
 
-		/* setAPIResponses(state => ({
-			...state,
-			isLoaded		: data.isLoaded,
-			activeEntries	: data.activeEntries,
-			isAdmin			: data.isAdmin
-		}))
-		:
-		setAPIResponses(state => ({
-			...state,
-			isLoaded	: false,
-			error		: data.error
-		})); */
+	const stateAfter = getState();
+
+	console.log("stateAfter : ", stateAfter)
+  	console.log('entries after dispatch: ', stateAfter.posts.entries.length)
+
 }

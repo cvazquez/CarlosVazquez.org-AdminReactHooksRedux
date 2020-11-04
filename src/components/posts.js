@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom'
 import useDeactivateModal from "./modals/useDeactivate";
 import { getPosts } from "./apis/posts";
 import { showDemoMessage } from '../helpers/login';
+import { useSelector } from 'react-redux'
+
 
 export default function Posts() {
 	const	[apiResponses, setAPIResponses] = useState({
@@ -23,13 +25,23 @@ export default function Posts() {
 				activeEntries	: []
 			}),
 			deactivateModal = useDeactivateModal(),
-			unMounted			= useRef(false);
+			unMounted		= useRef(false),
+			posts 			= useSelector(state => state.posts);
 
 	deactivateModal.referenceAPIResponses(setAPIResponses);
 
 	useEffect(() => {
-			async function getData() {
-				const data = await getPosts();
+			async function getData(posts) {
+				let data = await posts;
+
+				if(posts.isLoaded) {
+					// using redux to prevent reloading the posts each time
+					console.log("using redux");
+					data = posts;
+					data.activeEntries = data.entries;
+				} else {
+					data = await getPosts();
+				}
 
 				data.isLoaded ?
 					setAPIResponses(state => ({
@@ -47,11 +59,11 @@ export default function Posts() {
 			}
 
 			if(!unMounted.current) {
-				getData();
+				getData(posts);
 			}
 
 		return () => unMounted.current = true;
-	}, [])
+	}, [posts])
 
 	// When a post's Deactivate link is clicked
 	function handleDeleteClick(e) {
