@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import useDeactivateModal from "./modals/useDeactivate";
 import { getPosts } from "./apis/posts";
 import { showDemoMessage } from '../helpers/login';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 
 
 export default function Posts() {

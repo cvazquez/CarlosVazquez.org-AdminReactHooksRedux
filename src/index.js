@@ -6,7 +6,8 @@ import store from './store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { fetchPosts } from "./features/posts/postsSlice";
-
+import { fetchCategories } from "./features/category/categorySlice";
+import { fetchSeries } from "./features/series/seriesSlice";
 
 // Log the initial state
 console.log('Initial state: ', store.getState())
@@ -18,7 +19,11 @@ const unsubscribe = store.subscribe(() =>
 )
 
 // Now, dispatch some actions
+// Todo: move this into posts
 store.dispatch(fetchPosts);
+store.dispatch(fetchCategories);
+store.dispatch(fetchSeries);
+
 /* store.dispatch({	type	: 'postEdits/added',
 					payload	: {
 						draftId			: 1,

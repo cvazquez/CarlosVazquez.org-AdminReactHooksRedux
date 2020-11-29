@@ -1,15 +1,29 @@
-// Current state of tabs editing
-const iniialState = {
-	category	: null
+import { getOptions } from '../../components/apis/options';
+
+const initialState = {
+    optionsStates   : null,
+    apiStates       : null,
+    error           : null
 };
 
-export default function categoryReducer(state = iniialState, action) {
+export default function categoryReducer(state = initialState, action) {
+
 	switch(action.type) {
 		case "category/added" :
 			return {
-				name	: action.payload.categoryName,
+                ...state,
+                optionsStates   : action.payload.optionsStates,
+                apiStates       : action.payload.apiStates
 			}
 		default:
 			return state
 	}
+}
+
+export async function fetchCategories(dispatch, getState) {
+    const   data = await getOptions("Category", "Categories", "categories");
+
+	dispatch({ type: 'category/added', payload : data })
+
+	const stateAfter = getState();
 }

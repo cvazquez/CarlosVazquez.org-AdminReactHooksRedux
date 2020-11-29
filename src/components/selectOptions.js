@@ -1,11 +1,11 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { checkAPIResponse } from '../helpers/api'
 import { showDemoMessage } from '../helpers/login';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { getOptions } from './apis/options';
+import { useSelector } from 'react-redux'
 
 export default function SelectOptions(props) {
-
-		// Solves a Jest error
 		const	nameLower = props.name.toLowerCase(),
 				namePluralLower = props.namePlural.toLowerCase(),
 				//_isMounted			= useRef(false),
@@ -28,83 +28,53 @@ export default function SelectOptions(props) {
 
 					// Toggles update alert className of new option
 					newOptionSaveStatus : null
-				});
+                }),
+                unMounted    = useRef(false),
+                options     = {};
 
-		// Request categories to display and edit
-		function getOptions() {
-			return new Promise(resolve => {
-				fetch(`${process.env.REACT_APP_API_URL}/get${props.namePlural}`)
-					.then(res => checkAPIResponse(res))
-					.then(
-						result => {
-							if(result[namePluralLower] && Array.isArray(result[namePluralLower])) {
-								const 	optionsByName	= {},
-										optionsById		= {};
+            options[nameLower]     = useSelector(state => state[nameLower]);
 
-								result[namePluralLower].forEach(item => {
-									// Get a categories id by name
-									optionsByName[item.name] = item.id;
+        useEffect(() => {
+			async function getData(options) {
+				let data = await options;
 
-									// Get a categories name by id
-									optionsById[item.id] = {
-										name		: item.name,
-										saveStatus	: null}; // don't change case. Displays in option search overlay results
-								});
+                if(options.isLoaded) {
+                    console.log("using redux");
+                    data = options;
+                } else {
+                    data = await getOptions(props.name, props.namePlural, namePluralLower);
+                }
 
-								resolve({
-									apiStates : {
-										isLoaded	: true,
-										isAdmin		: result.isAdmin
-									},
-									optionsStates : {
-										optionsByName,
-										optionsById
-									}
-								});
-							} else {
-								throw(new Error(`getOptions() fetch missing ${props.name} array`));
-							}
-						},
-						error => {
+                if(data.apiStates && data.apiStates.isLoaded) {
+                     setAPIResponseState(state => ({
+                        ...state,
+                        ...data.apiStates
+                    }));
 
-							setAPIResponseState(state => ({
-								...state,
-								isLoaded	: false,
-								error
-							}));
-
-							console.log(`No Response from API getting ${props.name}`, error)
-						}
-					)}).catch(error => {
-
-						setAPIResponseState(state => ({
-							...state,
-							error
-						}));
-
-						console.error("API Request Categories Fetch Error:", error);
-				})
-		}
-
-		useLayoutEffect(() => {
-			async function getData() {
-				const data = await getOptions();
-
-				setAPIResponseState(state => ({
-					...state,
-					...data.apiStates
-				}));
-
-				setOptionsState(state => ({
-					...state,
-					...data.optionsStates
-				}));
+                    setOptionsState(state => ({
+                        ...state,
+                        ...data.optionsStates
+                    }));
+                } else {
+			    	setAPIResponseState(state => ({
+                        ...state,
+                        apiStates   : {
+                            ...state.apiStates,
+                            isLoaded    : false
+                        },
+					    error : data.error
+                    }));
+                }
 			}
 
-			getData();
+			if(!unMounted.current) {
+				getData(options[nameLower]);
+            }
+
+            return () => unMounted.current = true;
 
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [props.name]);
+		}, [nameLower]);
 
 		function handleTextUpdate(e) {
 			const	id				= e.currentTarget.dataset.id,
