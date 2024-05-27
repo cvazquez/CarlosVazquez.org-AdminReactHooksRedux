@@ -2,7 +2,6 @@ import { checkAPIResponse } from '../../helpers/api'
 
 // Request categories to display and edit
 export function getOptions(name, namePlural, namePluralLower) {
-    console.log("getting options")
     return new Promise(resolve => {
         fetch(`${process.env.REACT_APP_API_URL}/get${namePlural}`)
             .then(res => checkAPIResponse(res))

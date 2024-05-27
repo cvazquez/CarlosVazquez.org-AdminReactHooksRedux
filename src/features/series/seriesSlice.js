@@ -24,7 +24,5 @@ export default function seriesReducer(state = initialState, action) {
 export async function fetchSeries(dispatch, getState) {
     const   data = await getOptions("Series", "Series", "series");
 
-	dispatch({ type: 'series/added', payload : data })
-
-	const stateAfter = getState();
+	dispatch({ type: 'series/added', payload : data });
 }

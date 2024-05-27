@@ -23,7 +23,5 @@ export default function categoryReducer(state = initialState, action) {
 export async function fetchCategories(dispatch, getState) {
     const   data = await getOptions("Category", "Categories", "categories");
 
-	dispatch({ type: 'category/added', payload : data })
-
-	const stateAfter = getState();
+	dispatch({ type: 'category/added', payload : data });
 }

@@ -39,7 +39,6 @@ export default function SelectOptions(props) {
 				let data = await options;
 
                 if(options.isLoaded) {
-                    console.log("using redux");
                     data = options;
                 } else {
                     data = await getOptions(props.name, props.namePlural, namePluralLower);
