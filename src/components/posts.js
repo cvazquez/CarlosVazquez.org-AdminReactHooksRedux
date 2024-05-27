@@ -35,8 +35,6 @@ export default function Posts() {
 				let data = await posts;
 
 				if(posts.isLoaded) {
-					// using redux to prevent reloading the posts each time
-					console.log("using redux");
 					data = posts;
 					data.activeEntries = data.entries;
 				} else {

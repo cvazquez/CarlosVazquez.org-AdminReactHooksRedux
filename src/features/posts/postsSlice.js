@@ -29,11 +29,5 @@ export async function fetchPosts(dispatch, getState) {
 
 
 	//dispatch({ type: 'posts/get', payload : data.isLoaded ? data.activeEntries : [] })
-	dispatch({ type: 'posts/get', payload : data })
-
-	const stateAfter = getState();
-
-	console.log("stateAfter : ", stateAfter)
-  	console.log('entries after dispatch: ', stateAfter.posts.entries.length)
-
+	dispatch({ type: 'posts/get', payload : data });
 }

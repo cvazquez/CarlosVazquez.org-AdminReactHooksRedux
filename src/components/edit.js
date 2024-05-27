@@ -3,6 +3,7 @@
 */
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useParams } from "react-router-dom";
 import Form from "./form";
 import { checkAPIResponse, setSavedPostStatuses } from '../helpers/api'
 import { getlistItemDisplay } from '../helpers/form'
@@ -11,9 +12,10 @@ import { showDemoMessage } from '../helpers/login';
 export default function Edit(props) {
 	const	intervalCountDown	= 5,
 			date				= new Date(),
+			params 				= useParams(),
 			[apiResponsesState, setAPIResponsesState] = useState({
 				// Loading Async Init
-				id								: props.match ? props.match.params.id : null, // A new post will have a null value
+				id								: params.id ? params.id : null, // A new post will have a null value
 				error							: null,
 				isLoaded						: false,
 				isAdmin							: true,
@@ -92,7 +94,6 @@ export default function Edit(props) {
 			let _isMounted			= useRef(false),
 				_isMountedAdd		= useRef(false);
 
-
 	// Common indexed states
 	const updateIndexedStates = useCallback(
 		(series, categories) => {
@@ -130,9 +131,9 @@ export default function Edit(props) {
 	// Edit existing Post
 	useEffect(() => {
 		if(!_isMounted.current) {
-			if(apiResponsesState.id) {
+			if(params.id) {
 				const getData = async () => {
-					const data = await getPost(apiResponsesState.id);
+					const data = await getPost(params.id);
 
 					setAPIResponsesState(data.apiResponse);
 					setFormState(data.form);
@@ -154,7 +155,7 @@ export default function Edit(props) {
 		}
 
 		return () => _isMounted.current;
-	}, [apiResponsesState.id, getPost, updateIndexedStates]);
+	}, [getPost, updateIndexedStates, params]);
 
 	// Add a new post
 	useEffect(() => {
