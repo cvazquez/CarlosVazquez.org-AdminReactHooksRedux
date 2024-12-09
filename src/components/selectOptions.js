@@ -1,21 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { checkAPIResponse } from '../helpers/api'
 import { showDemoMessage } from '../helpers/login';
 import { Link } from 'react-router-dom';
 import { getOptions } from './apis/options';
 import { useSelector } from 'react-redux'
 
-export default function SelectOptions(props) {
-		const	nameLower = props.name.toLowerCase(),
-				namePluralLower = props.namePlural.toLowerCase(),
-				//_isMounted			= useRef(false),
-				[apiResponseState, setAPIResponseState] = useState({
+export default function SelectOptions({ name, namePlural }) {
+		const [apiResponseState, setAPIResponseState] = useState({
 					// api async call results
 					error				: undefined,
 					isLoaded			: false,
 					isAdmin				: true
-				}),
-				[optionsState, setOptionsState] = useState({
+				});
+
+		const [optionsState, setOptionsState] = useState({
+					label: {
+						name,
+						nameLower: name.toLowerCase(),
+					},
+
 					// Categories list to display and edit
 					optionsByName	: {},
 					optionsById		: {},
@@ -28,21 +31,17 @@ export default function SelectOptions(props) {
 
 					// Toggles update alert className of new option
 					newOptionSaveStatus : null
-                }),
-                unMounted    = useRef(false),
-                options     = {};
+                });
 
-            options[nameLower]     = useSelector(state => state[nameLower]);
+        const options = useSelector(state => state.optionsStates);
 
         useEffect(() => {
-			async function getData(options) {
-				let data = await options;
-
-                if(options.isLoaded) {
-                    data = options;
-                } else {
-                    data = await getOptions(props.name, props.namePlural, namePluralLower);
-                }
+			async function getData() {
+				const data = await getOptions(
+					name,
+					namePlural,
+					namePlural.toLowerCase(),
+				);
 
                 if(data.apiStates && data.apiStates.isLoaded) {
                      setAPIResponseState(state => ({
@@ -66,14 +65,9 @@ export default function SelectOptions(props) {
                 }
 			}
 
-			if(!unMounted.current) {
-				getData(options[nameLower]);
-            }
+			getData();
 
-            return () => unMounted.current = true;
-
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [nameLower]);
+		}, [options, name, namePlural]);
 
 		function handleTextUpdate(e) {
 			const	id				= e.currentTarget.dataset.id,
@@ -87,10 +81,10 @@ export default function SelectOptions(props) {
 			}));
 		}
 
-		function updateOption(id, name, optionsById) {
-			fetch(`${process.env.REACT_APP_API_URL}/update${props.name}`, {
+		function updateOption(id, nameArg, optionsById) {
+			fetch(`${process.env.REACT_APP_API_URL}/update${nameArg}`, {
 				method	: 'POST',
-				body	: JSON.stringify({id,name}),
+				body	: JSON.stringify({id, name: nameArg}),
 				headers	: {	'Content-Type': 'application/json'}
 			})
 			.then(res => checkAPIResponse(res))
@@ -119,7 +113,7 @@ export default function SelectOptions(props) {
 						optionsById
 					}));
 
-					throw(new Error(`Failed Saving updated ${nameLower}.`));
+					throw(new Error(`Failed Saving updated ${optionsState.label.nameLower}.`));
 				}
 			},
 			error => {
@@ -132,22 +126,22 @@ export default function SelectOptions(props) {
 				}));
 
 				console.log("No Response from API saving categories", error)
-			}).catch(error => console.error(`API Request Saving Updated ${props.name} Fetch Error:`, error));
+			}).catch(error => console.error(`API Request Saving Updated ${nameArg} Fetch Error:`, error));
 		}
 
 		// If a option is updated, post update to API to save to DB
 		function handleOptionBlur(e) {
 			// A blanked out option will deactivate it
 			const	id		= e.currentTarget.dataset.id,
-					name	= e.target.value.trim();
+					optionName	= e.target.value.trim();
 
 			// Used to reinit the option names for comparison later
 			let optionsById = optionsState.optionsById;
 
 			// Option name didn't update, no need to save. Exit function
-			if(optionsState.optionsById[id].name === name) return;
+			if(optionsState.optionsById[id].name === optionName) return;
 
-			updateOption(id, name, optionsById)
+			updateOption(id, optionName, optionsById)
 		}
 
 		function handleNewOption(e) {
@@ -160,14 +154,14 @@ export default function SelectOptions(props) {
 		}
 
 		function addOption(newOption) {
-			fetch(`${process.env.REACT_APP_API_URL}/add${props.name}`, {
+			fetch(`${process.env.REACT_APP_API_URL}/add${optionsState.label.name}`, {
 				method	: 'POST',
 				body	: JSON.stringify({newOption}),
 				headers	: {	'Content-Type': 'application/json'}
 			})
 			.then(res => checkAPIResponse(res))
 			.then( result => {
-				const optionName = "added" + props.name;
+				const optionName = "added" + optionsState.label.name;
 
 				if(result[optionName].affectedRows && result[optionName].affectedRows > 0) {
 
@@ -192,10 +186,13 @@ export default function SelectOptions(props) {
 				} else {
 					setOptionsState(state => ({
 						...state,
-						newOptionSaveStatus : <span className='blink'>FAILED SAVING! {result.added[props.name].message}</span>
+						newOptionSaveStatus :
+							<span className='blink'>
+								FAILED SAVING! {result.added[optionsState.label.name].message}
+							</span>,
 					}));
 
-					throw(new Error(`Failed saving new ${props.name}. No DB rows affected`));
+					throw(new Error(`Failed saving new ${optionsState.label.name}. No DB rows affected`));
 				}
 			},
 			error => {
@@ -212,7 +209,7 @@ export default function SelectOptions(props) {
 					newOptionSaveStatus : <span className='blink'>FAILED SAVING!</span>
 				}));
 
-				console.log(`Fetch Promise Error Saving New ${props.name} : ${error.message}`)
+				console.log(`Fetch Promise Error Saving New ${optionsState.label.name} : ${error.message}`)
 				console.log(error)
 			});
 		}
@@ -238,7 +235,7 @@ export default function SelectOptions(props) {
 								<input	type		= "text"
 										value		= {optionsState.newOption}
 										onChange	= {handleNewOption}
-										placeholder	= {`Add a New ${props.name}`} />
+										placeholder	= {`Add a New ${optionsState.label.name}`} />
 
 								<button type="button" onClick={handleNewOptionSubmit}>Add</button>
 								{optionsState.newOptionSaveStatus}
@@ -247,7 +244,7 @@ export default function SelectOptions(props) {
 							{/* Lookp through existing list of categories to edit */}
 							{Object.keys(optionsState.optionsByName).map(key =>
 								<div key		= {key}>
-									<input	className	=  {optionsState.savedOption === optionsState.optionsById[optionsState.optionsByName[key]].name ? props.name + "saved" : props.name}
+									<input	className	=  {optionsState.savedOption === optionsState.optionsById[optionsState.optionsByName[key]].name ? name + "saved" : name}
 											type		= "text"
 											value		= {optionsState.optionsById[optionsState.optionsByName[key]].name}
 											data-id		= {optionsState.optionsByName[key]}
@@ -256,7 +253,7 @@ export default function SelectOptions(props) {
 											onBlur		= {handleOptionBlur} />
 									{optionsState.optionsById[optionsState.optionsByName[key]].saveStatus}
 
-									{props.name === "Series" &&
+									{optionsState.label.name === "Series" &&
 										<span className="series-manage">
 											[<Link	to			=	{{
 																		pathname	: `/series/${optionsState.optionsByName[key]}`,
