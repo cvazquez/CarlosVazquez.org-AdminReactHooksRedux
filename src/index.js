@@ -8,6 +8,10 @@ import * as serviceWorker from './serviceWorker';
 import { fetchPosts } from "./features/posts/postsSlice";
 import { fetchCategories } from "./features/category/categorySlice";
 import { fetchSeries } from "./features/series/seriesSlice";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 // Every time the state changes, log it
 // Note that subscribe() returns a function for unregistering the listener
