@@ -32,14 +32,7 @@
           "error",
           4
         ],
-        "react/jsx-indent-props": [
-          "error",
-          4
-        ],
-        "react/forbid-prop-types": [
-          2,
-          {"forbid": ["any", "array"]}
-        ],
+        "react/prop-types": 0,
         "no-unused-vars": [
           "error", {
             "vars": "all", "args": "after-used", "ignoreRestSiblings": false
