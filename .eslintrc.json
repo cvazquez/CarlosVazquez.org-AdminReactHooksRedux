@@ -7,9 +7,6 @@
     ],
     "plugins": ["react", "import", "jsx-a11y"],
     "rules": {
-        "class-methods-use-this": [
-          0
-        ],
         "max-len": [
           "error",
           {
@@ -32,14 +29,7 @@
           "error",
           4
         ],
-        "react/jsx-indent-props": [
-          "error",
-          4
-        ],
-        "react/forbid-prop-types": [
-          2,
-          {"forbid": ["any", "array"]}
-        ],
+        "react/prop-types": 0,
         "no-unused-vars": [
           "error", {
             "vars": "all", "args": "after-used", "ignoreRestSiblings": false
@@ -55,7 +45,7 @@
           0
         ],
         "react/prefer-stateless-function": [
-          0
+          1
         ],
         "react/jsx-filename-extension": [
           1,
@@ -69,7 +59,12 @@
         "max-params": [
           "error",
           7
-        ]
+        ],
+        "semi": ["error", "always"],
+        "prefer-destructuring": ["error", {
+          "array": true,
+          "object": true
+        }]
     },
     "parserOptions": {
       "ecmaVersion": 2021,

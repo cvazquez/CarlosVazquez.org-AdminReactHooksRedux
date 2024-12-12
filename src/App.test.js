@@ -1,197 +1,197 @@
-import React from 'react';
-import { render, cleanup, fireEvent, waitForElement } from '@testing-library/react';
-import App, {getLinks} from './App';
-import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
+import React from "react";
+import { render, cleanup, fireEvent, waitFor } from "@testing-library/react";
+import App, {getLinks} from "./App";
+import { Router } from "react-router-dom";
+import { createMemoryHistory } from "history";
 
-import store from './store';
-import { Provider } from 'react-redux';
+import store from "./store";
+import { Provider } from "react-redux";
 import { fetchPosts } from "./features/posts/postsSlice";
 
 
 
-afterEach(cleanup)
+afterEach(cleanup);
 
-it('renders without crashing', () => {
-	render(<App />, <div />);
+it("renders without crashing", () => {
+    render(<App />, <div />);
 });
 
-it('should take a snapshot', () => {
-	const { asFragment } = render(<App />)
+it("should take a snapshot", () => {
+    const { asFragment } = render(<App />);
 
-	expect(asFragment(<App />)).toMatchSnapshot()
-})
-
-test('Has Home Text', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/Home/);
-  expect(linkElement).toBeInTheDocument();
+    expect(asFragment(<App />)).toMatchSnapshot();
 });
 
-test('Has Post Text', () => {
-	const { getByText } = render(<App />);
-	const linkElement = getByText(/Post/);
-	expect(linkElement).toBeInTheDocument();
-  });
+test("Has Home Text", () => {
+    const { getByText } = render(<App />);
+    const linkElement = getByText(/Home/);
+    expect(linkElement).toBeInTheDocument();
+});
 
-  test('Links should match', () => {
-	const obj = getLinks();
+test("Has Post Text", () => {
+    const { getByText } = render(<App />);
+    const linkElement = getByText(/Post/);
+    expect(linkElement).toBeInTheDocument();
+});
 
-	expect(obj).toEqual(
-	  expect.objectContaining([{
-			path	: "/",
-			text	: "Home"
-		},
-		{
-			path	: "/posts",
-			text	: "Posts"
-		},
-		{
-			path	: "/posts/add",
-			text	: "Add"
-		},
-		{
-			path	: "/categories",
-			text	: "Categories"
-		},
-		{
-			path	: "/series",
-			text	: "Series"
-		}])
-	);
-  });
+test("Links should match", () => {
+    const obj = getLinks();
 
-
-	const renderWithRouter = (component) => {
-		const history = createMemoryHistory()
-			return {
-				...render (
-					<Router history={history}>
-					{component}
-					</Router>
-				)
-			}
-	}
-
-	it('should render the home page', () => {
-
-		const { container, getByTestId } = renderWithRouter(<App />)
-		const navbar = getByTestId('header')
-		const link = getByTestId('Posts')
-
-		expect(container.innerHTML).toMatch('Home')
-		expect(navbar).toContainElement(link)
-	})
-
-	// /posts
-/*  	it('should navigate to the posts page loading', ()=> {
-
-		const unsubscribe = store.subscribe(() =>
-		console.log('State after dispatch: ', store.getState())
-		)
-		store.dispatch(fetchPosts);
-		unsubscribe()
+    expect(obj).toEqual(
+        expect.objectContaining([{
+            path	: "/",
+            text	: "Home"
+        },
+        {
+            path	: "/posts",
+            text	: "Posts"
+        },
+        {
+            path	: "/posts/add",
+            text	: "Add"
+        },
+        {
+            path	: "/categories",
+            text	: "Categories"
+        },
+        {
+            path	: "/series",
+            text	: "Series"
+        }])
+    );
+});
 
 
-		const { container, getByTestId } = renderWithRouter(<Provider store={store}><App /></Provider>)
+const renderWithRouter = (component) => {
+    const history = createMemoryHistory();
+    return {
+        ...render (
+            <Router history={history}>
+                {component}
+            </Router>
+        )
+    };
+};
 
-		fireEvent.click(getByTestId('Posts'))
+it("should render the home page", () => {
 
-		expect(container.innerHTML).toMatch('Loading...')
-	}) */
+    const { container, getByTestId } = renderWithRouter(<App />);
+    const navbar = getByTestId("header");
+    const link = getByTestId("Posts");
 
-/* 	it('should navigate to the posts page loaded', async () => {
-		const { getByText , getByTestId } = renderWithRouter(<App />)
+    expect(container.innerHTML).toMatch("Home");
+    expect(navbar).toContainElement(link);
+});
 
-		fireEvent.click(getByTestId('Posts'))
+// /posts
+it('should navigate to the posts page loading', ()=> {
+    const unsubscribe = store.subscribe(() =>
+        // eslint-disable-next-line no-console
+        console.log('State after dispatch: ', store.getState())
+    );
+    store.dispatch(fetchPosts);
+    unsubscribe();
 
-		const posts = await waitForElement(() => getByText("Title"))
 
-		expect(posts).toHaveTextContent('Title')
-	}) */
+    const { container, getByTestId } = renderWithRouter(<Provider store={store}><App /></Provider>);
 
-	// /posts/add
-	it('should navigate to the add page loading', ()=> {
-		const { container, getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId('Posts'));
 
-		fireEvent.click(getByTestId('Add'))
+    expect(container.innerHTML).toMatch('Loading...');
+});
 
-		expect(container.innerHTML).toMatch('Loading...')
-	})
+it('should navigate to the posts page loaded', async () => {
+    const { getByText , getByTestId } = renderWithRouter(<App />);
 
-	it('should navigate to the add page loaded', async () => {
-		const { getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId('Posts'));
 
-		fireEvent.click(getByTestId('Add'))
+    const posts = await waitFor(() => getByText("Title"));
 
-		const add = await waitForElement(() => getByTestId("Save"))
+    expect(posts).toHaveTextContent('Title');
+});
 
-		expect(add).toHaveAttribute('type', 'submit')
-	}, 10000)
+// /posts/add
+it("should navigate to the add page loading", ()=> {
+    const { container, getByTestId } = renderWithRouter(<App />);
 
-	// /posts/edit
-/* 	it('should navigate to the edit page loading', async ()=> {
-		const { container, getByTestId, getByText } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId("Add"));
 
-		fireEvent.click(getByTestId('Posts'))
+    expect(container.innerHTML).toMatch("Loading...");
+});
 
-		await waitForElement(() => getByText("Title"))
+it("should navigate to the add page loaded", async () => {
+    const { getByTestId } = renderWithRouter(<App />);
 
-		fireEvent.click(getByTestId('38'))
+    fireEvent.click(getByTestId("Add"));
 
-		expect(container.innerHTML).toMatch('Loading...')
-	}) */
+    const add = await waitFor(() => getByTestId("Save"));
 
-/* 	it('should navigate to the edit page loaded', async ()=> {
-		const { getByTestId, getByText } = renderWithRouter(<App />)
+    expect(add).toHaveAttribute("type", "submit");
+}, 10000);
 
-		fireEvent.click(getByTestId('Posts'))
+// /posts/edit
+it('should navigate to the edit page loading', async ()=> {
+    const { container, getByTestId, getByText } = renderWithRouter(<App />);
 
-		await waitForElement(	() => getByText("Title"));
+    fireEvent.click(getByTestId('Posts'));
 
-		fireEvent.click(getByTestId('38'))
+    await waitFor(() => getByText("Title"));
 
-		const edit = await waitForElement(() => getByTestId("Save"))
+    fireEvent.click(getByTestId('38'));
 
-		expect(edit).toHaveAttribute('type', 'submit')
-	}, 10000) */
+    expect(container.innerHTML).toMatch('Loading...');
+});
 
-	// /categories
-	it('should navigate to the categories page loading', ()=> {
-		const { container, getByTestId } = renderWithRouter(<App />)
+it('should navigate to the edit page loaded', async ()=> {
+    const { getByTestId, getByText } = renderWithRouter(<App />);
 
-		fireEvent.click(getByTestId('Categories'))
+    fireEvent.click(getByTestId('Posts'));
 
-		expect(container.innerHTML).toMatch('Loading...')
-	})
+    await waitFor(	() => getByText("Title"));
 
-	it('should navigate to the categories page loaded', async ()=> {
-		const { getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId('38'));
 
-		fireEvent.click(getByTestId('Categories'))
+    const edit = await waitFor(() => getByTestId("Save"));
 
-		const posts = await waitForElement(() => getByTestId("About Me"))
+    expect(edit).toHaveAttribute('type', 'submit');
+}, 10000);
 
-		expect(posts).toHaveClass('Category')
-	})
+// /categories
+it("should navigate to the categories page loading", ()=> {
+    const { container, getByTestId } = renderWithRouter(<App />);
 
-	// /series
-	it('should navigate to the series page loading', ()=> {
-		const { container, getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId("Categories"));
 
-		fireEvent.click(getByTestId('Series'))
+    expect(container.innerHTML).toMatch("Loading...");
+});
 
-		expect(container.innerHTML).toMatch('Loading...')
-	})
+it("should navigate to the categories page loaded", async ()=> {
+    const { getByTestId } = renderWithRouter(<App />);
 
-	it('should navigate to the series page loaded', async ()=> {
-		const { getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId("Categories"));
 
-		fireEvent.click(getByTestId('Series'))
+    const posts = await waitFor(() => getByTestId("About Me"));
 
-		const	series			= await waitForElement(() => getByTestId("Patagonia")),
-				seriesManage	= getByTestId("Patagonia_manage");
+    expect(posts).toHaveClass("Category");
+});
 
-		expect(series).toHaveClass('Series')
-		expect(seriesManage).toHaveClass('series-manage-click')
-	})
+// /series
+it("should navigate to the series page loading", ()=> {
+    const { container, getByTestId } = renderWithRouter(<App />);
+
+    fireEvent.click(getByTestId("Series"));
+
+    expect(container.innerHTML).toMatch("Loading...");
+});
+
+it("should navigate to the series page loaded", async ()=> {
+    const { getByTestId } = renderWithRouter(<App />);
+
+    fireEvent.click(getByTestId("Series"));
+
+    const	series			= await waitFor(() => getByTestId("Patagonia")),
+        seriesManage	= getByTestId("Patagonia_manage");
+
+    expect(series).toHaveClass("Series");
+    expect(seriesManage).toHaveClass("series-manage-click");
+});
