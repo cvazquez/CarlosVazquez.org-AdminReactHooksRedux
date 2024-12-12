@@ -18,9 +18,9 @@ export default function postsReducer(state = initialState, action) {
                 isLoaded	: action.payload.isLoaded,
                 entries		: action.payload.activeEntries,
                 isAdmin		: action.payload.isAdmin
-            }
+            };
         default:
-            return state
+            return state;
     }
 }
 

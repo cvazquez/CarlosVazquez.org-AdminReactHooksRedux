@@ -1,4 +1,4 @@
-import { checkAPIResponse } from "../../helpers/api"
+import { checkAPIResponse } from "../../helpers/api";
 
 // API request blog posts, to display and edit
 export function getPosts() {
@@ -17,7 +17,7 @@ export function getPosts() {
                         });
 
                     } else {
-                        throw new Error("Result posts response is invalid. Check API response")
+                        throw new Error("Result posts response is invalid. Check API response");
                     }
 
                 },
@@ -28,7 +28,7 @@ export function getPosts() {
                     });
 
                     // eslint-disable-next-line no-console
-                    console.log("No Response from API to retrieve posts", error)
+                    console.log("No Response from API to retrieve posts", error);
                 }
             )
             .catch(error => {
@@ -38,8 +38,8 @@ export function getPosts() {
                 });
 
                 // eslint-disable-next-line no-console
-                console.error("API Request Fetch Error:", error)
-            })
-    })
+                console.error("API Request Fetch Error:", error);
+            });
+    });
 
 }

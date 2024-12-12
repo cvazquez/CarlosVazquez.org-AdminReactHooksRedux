@@ -1,6 +1,6 @@
 import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { getSelectDateOptions } from "../helpers/form"
+import { getSelectDateOptions } from "../helpers/form";
 
 
 export default function Form(props) {
@@ -136,5 +136,5 @@ export default function Form(props) {
                 value		= "Save"
                 data-testid	= "Save"  />
         </form>
-    </div>
+    </div>;
 }

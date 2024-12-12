@@ -4,7 +4,7 @@
 */
 
 import React, { useState } from "react";
-import { checkAPIResponse } from "../../helpers/api"
+import { checkAPIResponse } from "../../helpers/api";
 
 
 export default function useDeactivateModal(activate = false, title = "", id, ids = [], entries = []) {
@@ -44,7 +44,7 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
 
                 {modal.responseInvalid}
             </div>
-        </div>)
+        </div>);
     }
 
 
@@ -87,7 +87,7 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
                         responseInvalid : "Error deactivating post. Try again."
                     }));
 
-                    throw new Error("Deactivate response is invalid. Check API response")
+                    throw new Error("Deactivate response is invalid. Check API response");
                 }
             },
             error => {
@@ -98,7 +98,7 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
                 }));
 
                 // eslint-disable-next-line no-console
-                console.log("No Response from API to deactivate post", error)
+                console.log("No Response from API to deactivate post", error);
 
             }).catch(error => {
                 // Post did NOT deactivate successfully. Display message to user.
@@ -109,7 +109,7 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
 
                 // eslint-disable-next-line
                 console.error("API Request Fetch Error:", error)
-            })
+            });
     }
 
     // removes the delete confirmation overlay/modal and its properties
@@ -130,7 +130,7 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
         setModal,
         modal,
         referenceAPIResponses
-    }
+    };
 }
 
 /* useDeactivateModal.prototype = {

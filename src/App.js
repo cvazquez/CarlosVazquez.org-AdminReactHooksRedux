@@ -87,4 +87,4 @@ const getNavLinks = () => [
 ;
 
 export default App;
-export {getNavLinks as getLinks } // For testing
+export {getNavLinks as getLinks }; // For testing

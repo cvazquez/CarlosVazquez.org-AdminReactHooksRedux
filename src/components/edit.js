@@ -5,8 +5,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Form from "./form";
-import { checkAPIResponse, setSavedPostStatuses } from "../helpers/api"
-import { getlistItemDisplay } from "../helpers/form"
+import { checkAPIResponse, setSavedPostStatuses } from "../helpers/api";
+import { getlistItemDisplay } from "../helpers/form";
 import { showDemoMessage } from "../helpers/login";
 
 // eslint-disable-next-line
@@ -129,7 +129,7 @@ export default function Edit() {
                 categoriesById
             }));
         }, []
-    )
+    );
 
     // Edit existing Post
     useEffect(() => {
@@ -149,7 +149,7 @@ export default function Edit() {
                         ...data.series
                     }));
                     updateIndexedStates(data.series, data.categories);
-                }
+                };
 
                 getData();
             }
@@ -278,7 +278,7 @@ export default function Edit() {
                             });
 
                         } else {
-                            throw new Error("Result post response is invalid. Check API response")
+                            throw new Error("Result post response is invalid. Check API response");
                         }
                     },
                     error => {
@@ -290,7 +290,7 @@ export default function Edit() {
                         }));
 
                         // eslint-disable-next-line no-console
-                        console.log("No Response from API to retrieve post", error)
+                        console.log("No Response from API to retrieve post", error);
                     }
                 ).catch(error => {
                     //_isMounted &&
@@ -301,8 +301,8 @@ export default function Edit() {
                     }));
 
                     // eslint-disable-next-line no-console
-                    console.error("API Request Fetch Error:", error)
-                })
+                    console.error("API Request Fetch Error:", error);
+                });
         });
     }
 
@@ -344,7 +344,7 @@ export default function Edit() {
 
                         //}
                     } else {
-                        throw new Error("Result new post response is invalid. Check API response")
+                        throw new Error("Result new post response is invalid. Check API response");
                     }
                 },
                 error => {
@@ -356,7 +356,7 @@ export default function Edit() {
                     }));
 
                     // eslint-disable-next-line no-console
-                    console.log("No Response from API to retrieve new post", error)
+                    console.log("No Response from API to retrieve new post", error);
                 }
             ).catch(error => {
                 //_isMounted &&
@@ -367,8 +367,8 @@ export default function Edit() {
                 }));
 
                 // eslint-disable-next-line no-console
-                console.error("API Request Fetch Error for new post:", error)
-            })
+                console.error("API Request Fetch Error for new post:", error);
+            });
     }
 
     // TinyMCE content field update
@@ -556,7 +556,7 @@ export default function Edit() {
                         )) : "No Results Found"
                 }
             </ul>
-        </div>
+        </div>;
 
     const escapeRegExp = text => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -579,7 +579,7 @@ export default function Edit() {
         setFormState({
             ...formState,
             categoryName : event.target.value
-        })
+        });
     }
 
     function handleSeriesSelection(e) {
@@ -593,7 +593,7 @@ export default function Edit() {
 
         postSeriesSelected.push({
             id, name
-        })
+        });
 
         seriesNameSelected.push(name);
 
@@ -612,7 +612,7 @@ export default function Edit() {
     const getAlertSaveStatus = postAdded =>
         <div className="alert alert-success">
             Post Successfully Saved{postAdded ? `...Redirecting in ${apiResponsesState.redirectCountDown} Seconds` : ""}
-        </div>
+        </div>;
 
     function handleSubmit(event) {
         let action = apiResponsesState.id ? "updatePost" : "addPost";
@@ -706,7 +706,7 @@ export default function Edit() {
         setAPIStatuses(state => ({
             ...state,
             saveDraftStatus	: <div className="alert alert-success">Saving draft...</div>
-        }))
+        }));
 
         // Save draft to database
         fetch(`${REACT_APP_API_URL}/saveDraft`, {
@@ -763,9 +763,9 @@ export default function Edit() {
                     savedPostSeriesStatus			= {apiStatuses.savedPostSeriesStatus}
                     deletedPostSeriesStatus			= {apiStatuses.deletedPostSeriesStatus}
                 />
-            </>
+            </>;
         }
     }
 
-    return <div>{post()}</div>
+    return <div>{post()}</div>;
 }

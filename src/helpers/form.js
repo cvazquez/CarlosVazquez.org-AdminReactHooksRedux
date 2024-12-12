@@ -48,6 +48,6 @@ const getSelectDateOptions	=	{
     days	: 	() => selectOptionsSequenceFactory(1, 31),
     hours	:	() => selectOptionsSequenceFactory(1, 24),
     minutes	:	() => selectOptionsSequenceFactory(1, 60),
-}
+};
 
-export {getlistItemDisplay, getSelectDateOptions, selectOptionsSequenceFactory }
+export {getlistItemDisplay, getSelectDateOptions, selectOptionsSequenceFactory };

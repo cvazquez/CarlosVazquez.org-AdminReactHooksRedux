@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react"
-import {Link} from "react-router-dom"
-import { checkAPIResponse } from "../helpers/api"
-import { selectOptionsSequenceFactory } from "../helpers/form"
+import React, { useState, useEffect } from "react";
+import {Link} from "react-router-dom";
+import { checkAPIResponse } from "../helpers/api";
+import { selectOptionsSequenceFactory } from "../helpers/form";
 import { showDemoMessage } from "../helpers/login";
 
 // eslint-disable-next-line
@@ -38,7 +38,7 @@ export default function SeriesManager(props) {
         }
 
         getData();
-    }, [props.match.params.id])
+    }, [props.match.params.id]);
 
     function getSeriesPostsById(id) {
         return new Promise(resolve => {
@@ -54,7 +54,7 @@ export default function SeriesManager(props) {
                                 sequence	: post.sequence,
                                 title		: post.title,
                                 saveStatus	: null
-                            }
+                            };
                         });
 
                         resolve({
@@ -64,19 +64,19 @@ export default function SeriesManager(props) {
                             isAdmin		: results.isAdmin
                         });
                     } else {
-                        throw(new Error("API did not return any posts for this series. Try adding some."))
+                        throw(new Error("API did not return any posts for this series. Try adding some."));
                     }
                 },
                 error => {
                     throw(new Error("getSeriesPostsById Error: ", error));
-                })
+                });
         })
             .catch(error => {
                 setAPIResponseState(state => ({
                     ...state,
                     error
                 }));
-            })
+            });
     }
 
     function updatePostSeriesSequence(postId, seriesId, sequence, postsById) {
@@ -115,7 +115,7 @@ export default function SeriesManager(props) {
                 },
                 error => {
                     throw(new Error("Series Posts Update failed. API might be down. Refresh And Try Again. : ", error));
-                })
+                });
         }).catch(error => {
             // Display failed save status of this post's sequence in series
             postsById[postId].saveStatus = "Failed saving!!";
@@ -157,7 +157,7 @@ export default function SeriesManager(props) {
                 setSeriesState(state => ({
                     ...state,
                     postsById	: data.postsById
-                }))
+                }));
             }, 5000);
         }
 
@@ -167,9 +167,9 @@ export default function SeriesManager(props) {
     function render() {
 
         if(apiResponseState.error) {
-            return <>Error Loading This Series Post Sequence. Refresh page and try again.</>
+            return <>Error Loading This Series Post Sequence. Refresh page and try again.</>;
         } else if(apiResponseState.loading) {
-            return <>Loading...</>
+            return <>Loading...</>;
         } else {
             /* 	For each post in a series,
 				display a drop down sequence of numbers,
@@ -201,7 +201,7 @@ export default function SeriesManager(props) {
                             </li>
                         ))}
                 </ul>
-            </div>
+            </div>;
         }
     }
 

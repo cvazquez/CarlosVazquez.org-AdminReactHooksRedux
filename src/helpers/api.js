@@ -10,10 +10,10 @@ function checkAPIResponse(res) {
             throw new TypeError("API response is not JSON!");
         }
 
-        return res.json()
+        return res.json();
     } else {
         // Invalid network response from API - Server is possibly down
-        throw new Error("Invalid API network response: " + res.statusText + ` (${res.status}) - Check if API is running`)
+        throw new Error("Invalid API network response: " + res.statusText + ` (${res.status}) - Check if API is running`);
     }
 }
 

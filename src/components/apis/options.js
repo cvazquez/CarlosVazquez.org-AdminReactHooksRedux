@@ -1,4 +1,4 @@
-import { checkAPIResponse } from "../../helpers/api"
+import { checkAPIResponse } from "../../helpers/api";
 
 // Request categories to display and edit
 export function getOptions(name, namePlural, namePluralLower) {
@@ -50,11 +50,11 @@ export function getOptions(name, namePlural, namePluralLower) {
                     })); */
 
                     // eslint-disable-next-line no-console
-                    console.log(`No Response from API getting ${name}`, error)
+                    console.log(`No Response from API getting ${name}`, error);
                 }
-            )}).catch(error => {
+            );}).catch(error => {
 
         // eslint-disable-next-line no-console
         console.error("API Request Categories Fetch Error:", error);
-    })
+    });
 }

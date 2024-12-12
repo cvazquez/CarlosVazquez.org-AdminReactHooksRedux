@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import useDeactivateModal from "./modals/useDeactivate";
 import { getPosts } from "./apis/posts";
 import { showDemoMessage } from "../helpers/login";
@@ -61,7 +61,7 @@ export default function Posts() {
         }
 
         return () => unMounted.current = true;
-    }, [posts])
+    }, [posts]);
 
     // When a post's Deactivate link is clicked
     function handleDeleteClick(e) {
@@ -141,6 +141,6 @@ export default function Posts() {
                     ))
                 }
             </div>
-        </>
+        </>;
     }
 }

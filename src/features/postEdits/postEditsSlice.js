@@ -39,8 +39,8 @@ export default function postEditsReducer(state = iniialState, action) {
                         flickrId	: action.payload.flickrId,
                     }
                 ]
-            }
+            };
         default:
-            return state
+            return state;
     }
 }

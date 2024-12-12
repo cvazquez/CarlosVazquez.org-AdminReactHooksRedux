@@ -18,7 +18,7 @@ import "@fontsource/roboto/700.css";
 const unsubscribe = store.subscribe(() =>
     // eslint-disable-next-line no-console
     console.log("State after dispatch: ", store.getState())
-)
+);
 
 // Now, dispatch some actions
 // Todo: move this into posts
@@ -27,7 +27,7 @@ store.dispatch(fetchCategories);
 store.dispatch(fetchSeries);
 
 // Stop listening to state updates
-unsubscribe()
+unsubscribe();
 
 const container = document.getElementById("root");
 const root = createRoot(container);

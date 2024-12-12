@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { checkAPIResponse } from "../helpers/api"
+import { checkAPIResponse } from "../helpers/api";
 import { showDemoMessage } from "../helpers/login";
 import { Link } from "react-router-dom";
 import { getOptions } from "./apis/options";
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 
 // eslint-disable-next-line
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
@@ -107,7 +107,7 @@ export default function SelectOptions({ name, namePlural }) {
                             ...state,
                             optionsById
                         }));
-                    }, 5000)
+                    }, 5000);
                 } else {
                     optionsById[id].saveStatus = <span className='blink'>FAILED SAVING!</span>;
 
@@ -129,7 +129,7 @@ export default function SelectOptions({ name, namePlural }) {
                 }));
 
                 // eslint-disable-next-line no-console
-                console.log("No Response from API saving categories", error)
+                console.log("No Response from API saving categories", error);
 
                 // eslint-disable-next-line
             }).catch(error => console.error(`API Request Saving Updated ${nameArg} Fetch Error:`, error));
@@ -147,7 +147,7 @@ export default function SelectOptions({ name, namePlural }) {
         // Option name didn't update, no need to save. Exit function
         if(optionsState.optionsById[id].name === optionName) return;
 
-        updateOption(id, optionName, optionsById)
+        updateOption(id, optionName, optionsById);
     }
 
     function handleNewOption(e) {
@@ -215,9 +215,9 @@ export default function SelectOptions({ name, namePlural }) {
                     newOptionSaveStatus : <span className='blink'>FAILED SAVING!</span>
                 }));
                 // eslint-disable-next-line no-console
-                console.log(`Fetch Promise Error Saving New ${optionsState.label.name} : ${error.message}`)
+                console.log(`Fetch Promise Error Saving New ${optionsState.label.name} : ${error.message}`);
                 // eslint-disable-next-line no-console
-                console.log(error)
+                console.log(error);
             });
     }
 
@@ -280,9 +280,9 @@ export default function SelectOptions({ name, namePlural }) {
                         </div>
                     )}
                 </div>
-            </div>
+            </div>;
         }
     }
 
-    return <>{form()}</>
+    return <>{form()}</>;
 }

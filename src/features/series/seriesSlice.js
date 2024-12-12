@@ -15,9 +15,9 @@ export default function seriesReducer(state = initialState, action) {
                 ...state,
                 optionsStates   : action.payload.optionsStates,
                 apiStates       : action.payload.apiStates
-            }
+            };
         default:
-            return state
+            return state;
     }
 }
 
