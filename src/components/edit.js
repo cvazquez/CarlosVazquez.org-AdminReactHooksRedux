@@ -15,10 +15,10 @@ const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 export default function Edit() {
     const	intervalCountDown	= 5,
         date				= new Date(),
-        params 				= useParams(),
+        { id } 				= useParams(),
         [apiResponsesState, setAPIResponsesState] = useState({
             // Loading Async Init
-            id								: params.id ? params.id : null, // A new post will have a null value
+            id								: id ? id : null, // A new post will have a null value
             error							: null,
             isLoaded						: false,
             isAdmin							: true,
@@ -134,9 +134,9 @@ export default function Edit() {
     // Edit existing Post
     useEffect(() => {
         if(!_isMounted.current) {
-            if(params.id) {
+            if(id) {
                 const getData = async () => {
-                    const data = await getPost(params.id);
+                    const data = await getPost(id);
 
                     setAPIResponsesState(data.apiResponse);
                     setFormState(data.form);
@@ -158,7 +158,7 @@ export default function Edit() {
         }
 
         return () => _isMounted.current;
-    }, [getPost, updateIndexedStates, params]);
+    }, [getPost, updateIndexedStates, id]);
 
     // Add a new post
     useEffect(() => {
@@ -196,7 +196,7 @@ export default function Edit() {
                 .then(
                     result => {
                         if(result && result.post && Array.isArray(result.post) && result.post.length === 1) {
-                            const 	post 							= result.post[0],
+                            const 	[ post ]						= result.post,
                                 publishDate 					= new Date(post.publishAt),
 
                                 // Manage Category Selection
@@ -381,7 +381,7 @@ export default function Edit() {
 
     // Format the publish date form fields into a valid date format
     function setPublishAtDate() {
-        let publishDay = formState.publishDay;
+        let {publishDay} = formState;
 
         // Check and fix if days are over Month Days limit
         if(formState.publishYear > 0 && formState.publishMonth > 0) {
@@ -494,9 +494,9 @@ export default function Edit() {
     // From the category search modal results, add a category clicked, to the selected category list
     function handleCategoryClick(event) {
         const	categoryName					= event.currentTarget.dataset.value,
-            categoryNamesSelected			= formState.categoryNamesSelected,
-            categoryNamesSelectedDisplay	= categoriesState.categoryNamesSelectedDisplay,
-            categoriesSelectedLowerCased 	= categoriesState.categoriesSelectedLowerCased;
+            {categoryNamesSelected} = formState,
+            {categoryNamesSelectedDisplay} = categoriesState,
+            {categoriesSelectedLowerCased} = categoriesState;
 
         // If the category name is not already selected, then add to list of categories selected
         // Note: categories should't appear in search overlay, to select, if already selected
@@ -583,9 +583,9 @@ export default function Edit() {
     }
 
     function handleSeriesSelection(e) {
-        let seriesSelectedDisplay 	= seriesState.seriesSelectedDisplay,
-            postSeriesSelected		= formState.postSeriesSelected,
-            seriesNameSelected		= formState.seriesNameSelected,
+        let {seriesSelectedDisplay} = seriesState,
+            {postSeriesSelected} = formState,
+            {seriesNameSelected} = formState,
             id						= e.target.value,
             name					= seriesState.seriesById[id];
 

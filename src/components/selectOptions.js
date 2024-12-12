@@ -73,8 +73,8 @@ export default function SelectOptions({ name, namePlural }) {
     }, [options, name, namePlural]);
 
     function handleTextUpdate(e) {
-        const	id				= e.currentTarget.dataset.id,
-            optionsById	= optionsState.optionsById;
+        const	{id} = e.currentTarget.dataset,
+            {optionsById} = optionsState;
 
         optionsById[id].name = e.target.value;
 
@@ -138,11 +138,11 @@ export default function SelectOptions({ name, namePlural }) {
     // If a option is updated, post update to API to save to DB
     function handleOptionBlur(e) {
     // A blanked out option will deactivate it
-        const	id		= e.currentTarget.dataset.id,
+        const	{id} = e.currentTarget.dataset,
             optionName	= e.target.value.trim();
 
         // Used to reinit the option names for comparison later
-        let optionsById = optionsState.optionsById;
+        let {optionsById} = optionsState;
 
         // Option name didn't update, no need to save. Exit function
         if(optionsState.optionsById[id].name === optionName) return;

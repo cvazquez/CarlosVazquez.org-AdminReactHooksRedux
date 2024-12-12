@@ -60,7 +60,11 @@
           "error",
           7
         ],
-        "semi": ["error", "always"]
+        "semi": ["error", "always"],
+        "prefer-destructuring": ["error", {
+          "array": true,
+          "object": true
+        }]
     },
     "parserOptions": {
       "ecmaVersion": 2021,

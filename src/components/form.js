@@ -3,62 +3,67 @@ import { Editor } from "@tinymce/tinymce-react";
 import { getSelectDateOptions } from "../helpers/form";
 
 
-export default function Form(props) {
-    const	form 		= props.form;
-
+export default function Form({
+    form, handleSubmit, handleTextUpdate,
+    handleCategoryInput, categoryOverlay, categoryNamesSelectedDisplay,
+    handleSeriesSelection, series, seriesSelectedDisplay,
+    handleEditorChange, handleSaveDraft, saveStatus,
+    saveDraftStatus, savedPostCategoriesStatus, savedPostFlickrSetStatus, savedPostSeriesStatus,
+    deletedPostSeriesStatus, deletedPostCategoriesStatus,
+}) {
     return	<div className="edit">
-        <form method="post" onSubmit={props.handleSubmit}>
+        <form method="post" onSubmit={handleSubmit}>
             <div className="meta-fields">
                 <input 	type="text"
                     name="title"
                     value={form.title}
                     placeholder="Title"
-                    onChange={props.handleTextUpdate} />
+                    onChange={handleTextUpdate} />
 
                 <input 	type="text"
                     name="teaser"
                     value={form.teaser}
                     placeholder="Teaser"
-                    onChange={props.handleTextUpdate} />
+                    onChange={handleTextUpdate} />
 
                 <input 	type="text"
                     name="metaDescription"
                     value={form.metaDescription}
                     placeholder="Meta Description"
-                    onChange={props.handleTextUpdate} />
+                    onChange={handleTextUpdate} />
 
                 <input 	type="text"
                     name="metaKeyWords"
                     value={form.metaKeyWords}
                     placeholder="Meta Keywords"
-                    onChange={props.handleTextUpdate} />
+                    onChange={handleTextUpdate} />
 
                 <div>
                     <select	name		= "publishYear"
                         value		= {form.publishYear}
-                        onChange	= {props.handleTextUpdate}>
+                        onChange	= {handleTextUpdate}>
                         {getSelectDateOptions.years()}
                     </select>
                     <select	name		= "publishMonth"
                         value		= {form.publishMonth}
-                        onChange	= {props.handleTextUpdate}>
+                        onChange	= {handleTextUpdate}>
                         {getSelectDateOptions.months()}
                     </select>
                     <select	name		= "publishDay"
                         value		= {form.publishDay}
-                        onChange	= {props.handleTextUpdate}>
+                        onChange	= {handleTextUpdate}>
                         {getSelectDateOptions.days()}
                     </select>
 
 							&nbsp;&nbsp;&nbsp;
                     <select	name		= "publishHour"
                         value		= {form.publishHour}
-                        onChange	= {props.handleTextUpdate}>
+                        onChange	= {handleTextUpdate}>
                         {getSelectDateOptions.hours()}
                     </select>
                     <select	name		= "publishMinute"
                         value		= {form.publishMinute}
-                        onChange	= {props.handleTextUpdate}>
+                        onChange	= {handleTextUpdate}>
                         {getSelectDateOptions.minutes()}
                     </select>
                 </div>
@@ -68,15 +73,15 @@ export default function Form(props) {
                     name		= "categories"
                     placeholder	= "Start Typing a Category"
                     value		= {form.categoryName}
-                    onChange	= {props.handleCategoryInput} />
-                <div>{props.categoryOverlay}</div>
-                <ul className="category-names-selected">{props.categoryNamesSelectedDisplay}</ul>
+                    onChange	= {handleCategoryInput} />
+                <div>{categoryOverlay}</div>
+                <ul className="category-names-selected">{categoryNamesSelectedDisplay}</ul>
 
                 <select name		= "series"
                     value		= {form.seriesId}
-                    onChange	= {props.handleSeriesSelection}>
+                    onChange	= {handleSeriesSelection}>
                     <option value="">-- Add to a Series --</option>
-                    {props.series.map(series => (
+                    {series.map(series => (
                         <option key		= {series.id}
                             value	= {series.id}>
                             {series.name}
@@ -84,12 +89,12 @@ export default function Form(props) {
                     ))}
                 </select>
                 <ul className="series-names-selected">
-                    {props.seriesSelectedDisplay}
+                    {seriesSelectedDisplay}
                 </ul>
 
                 <select name		= "flickrSetId"
                     value		= {form.flickrSetId}
-                    onChange	= {props.handleTextUpdate}>
+                    onChange	= {handleTextUpdate}>
                     <option value="">-- Attach To A Flickr Set --</option>
                     {form.flickrSets.map(flickrSet => (
                         <option key		= {flickrSet.id}
@@ -100,7 +105,7 @@ export default function Form(props) {
                 </select>
             </div>
 
-            {props.saveDraftStatus}
+            {saveDraftStatus}
 
             <div className="editor">
                 <Editor
@@ -119,17 +124,17 @@ export default function Form(props) {
 									bullist numlist outdent indent | removeformat | code | help`,
                         save_onsavecallback: function () {}
                     }}
-                    onEditorChange	= {props.handleEditorChange}
-                    onSaveContent	= {props.handleSaveDraft}
+                    onEditorChange	= {handleEditorChange}
+                    onSaveContent	= {handleSaveDraft}
                 />
             </div>
 
-            {props.saveStatus}
-            {props.deletedPostCategoriesStatus}
-            {props.savedPostCategoriesStatus}
-            {props.savedPostFlickrSetStatus}
-            {props.savedPostSeriesStatus}
-            {props.deletedPostSeriesStatus}
+            {saveStatus}
+            {deletedPostCategoriesStatus}
+            {savedPostCategoriesStatus}
+            {savedPostFlickrSetStatus}
+            {savedPostSeriesStatus}
+            {deletedPostSeriesStatus}
 
             <input	type		= "submit"
                 name		= "submitPost"

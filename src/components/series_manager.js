@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {Link} from "react-router-dom";
 import { checkAPIResponse } from "../helpers/api";
 import { selectOptionsSequenceFactory } from "../helpers/form";
@@ -7,7 +8,9 @@ import { showDemoMessage } from "../helpers/login";
 // eslint-disable-next-line
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
-export default function SeriesManager(props) {
+export default function SeriesManager() {
+    const { id } 				= useParams();
+
     const [apiResponseState, setAPIResponseState] = useState({
             // api async call results
             error				: undefined,
@@ -16,13 +19,13 @@ export default function SeriesManager(props) {
         }),
         [ seriesState, setSeriesState ] = useState({
             seriesPosts : [],
-            name		: props.location && props.location.state && props.location.state.name,  // TODO - this will not exist when copy/pasting url
+            name		: '',  // TODO - this will not exist when copy/pasting url
             postsById	: []
         });
 
     useEffect(() => {
         async function getData() {
-            const data = await getSeriesPostsById(props.match.params.id);
+            const data = await getSeriesPostsById(id);
 
             setAPIResponseState(state => ({
                 ...state,
@@ -38,7 +41,7 @@ export default function SeriesManager(props) {
         }
 
         getData();
-    }, [props.match.params.id]);
+    }, [id]);
 
     function getSeriesPostsById(id) {
         return new Promise(resolve => {
@@ -136,14 +139,14 @@ export default function SeriesManager(props) {
     function handleSequenceChange(e) {
         const	sequence	= e.target.value,
             postId		= e.currentTarget.dataset.entryid,
-            postsById	= seriesState.postsById;
+            { postsById }	= seriesState;
 
         // Update the sequence of the post
         postsById[postId].sequence = sequence;
 
         // API call to DB update this posts series sequence
         async function updateData() {
-            const data = await updatePostSeriesSequence(postId, props.match.params.id, sequence, postsById);
+            const data = await updatePostSeriesSequence(postId, id, sequence, postsById);
 
             setSeriesState(state => ({
                 ...state,
