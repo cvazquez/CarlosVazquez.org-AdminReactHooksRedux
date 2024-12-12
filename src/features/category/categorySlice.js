@@ -1,4 +1,4 @@
-import { getOptions } from '../../components/apis/options';
+import { getOptions } from "../../components/apis/options";
 
 const initialState = {
     optionsStates   : null,
@@ -8,20 +8,20 @@ const initialState = {
 
 export default function categoryReducer(state = initialState, action) {
 
-	switch(action.type) {
-		case "category/added" :
-			return {
+    switch(action.type) {
+        case "category/added" :
+            return {
                 ...state,
                 optionsStates   : action.payload.optionsStates,
                 apiStates       : action.payload.apiStates
-			}
-		default:
-			return state
-	}
+            }
+        default:
+            return state
+    }
 }
 
-export async function fetchCategories(dispatch, getState) {
+export async function fetchCategories(dispatch) {
     const   data = await getOptions("Category", "Categories", "categories");
 
-	dispatch({ type: 'category/added', payload : data });
+    dispatch({ type: "category/added", payload : data });
 }

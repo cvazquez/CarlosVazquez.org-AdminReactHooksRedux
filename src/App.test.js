@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup, fireEvent, waitForElement } from "@testing-library/react";
+import { render, cleanup, fireEvent, waitFor } from "@testing-library/react";
 import App, {getLinks} from "./App";
 import { Router } from "react-router-dom"
 import { createMemoryHistory } from "history"
@@ -84,31 +84,31 @@ it("should render the home page", () => {
 })
 
 // /posts
-/*  	it('should navigate to the posts page loading', ()=> {
+it('should navigate to the posts page loading', ()=> {
+    const unsubscribe = store.subscribe(() =>
+        // eslint-disable-next-line no-console
+        console.log('State after dispatch: ', store.getState())
+    )
+    store.dispatch(fetchPosts);
+    unsubscribe()
 
-		const unsubscribe = store.subscribe(() =>
-		console.log('State after dispatch: ', store.getState())
-		)
-		store.dispatch(fetchPosts);
-		unsubscribe()
 
+    const { container, getByTestId } = renderWithRouter(<Provider store={store}><App /></Provider>)
 
-		const { container, getByTestId } = renderWithRouter(<Provider store={store}><App /></Provider>)
+    fireEvent.click(getByTestId('Posts'))
 
-		fireEvent.click(getByTestId('Posts'))
+    expect(container.innerHTML).toMatch('Loading...')
+});
 
-		expect(container.innerHTML).toMatch('Loading...')
-	}) */
+it('should navigate to the posts page loaded', async () => {
+    const { getByText , getByTestId } = renderWithRouter(<App />)
 
-/* 	it('should navigate to the posts page loaded', async () => {
-		const { getByText , getByTestId } = renderWithRouter(<App />)
+    fireEvent.click(getByTestId('Posts'))
 
-		fireEvent.click(getByTestId('Posts'))
+    const posts = await waitFor(() => getByText("Title"))
 
-		const posts = await waitForElement(() => getByText("Title"))
-
-		expect(posts).toHaveTextContent('Title')
-	}) */
+    expect(posts).toHaveTextContent('Title')
+})
 
 // /posts/add
 it("should navigate to the add page loading", ()=> {
@@ -124,37 +124,37 @@ it("should navigate to the add page loaded", async () => {
 
     fireEvent.click(getByTestId("Add"))
 
-    const add = await waitForElement(() => getByTestId("Save"))
+    const add = await waitFor(() => getByTestId("Save"))
 
     expect(add).toHaveAttribute("type", "submit")
 }, 10000)
 
 // /posts/edit
-/* 	it('should navigate to the edit page loading', async ()=> {
-		const { container, getByTestId, getByText } = renderWithRouter(<App />)
+it('should navigate to the edit page loading', async ()=> {
+    const { container, getByTestId, getByText } = renderWithRouter(<App />)
 
-		fireEvent.click(getByTestId('Posts'))
+    fireEvent.click(getByTestId('Posts'))
 
-		await waitForElement(() => getByText("Title"))
+    await waitFor(() => getByText("Title"))
 
-		fireEvent.click(getByTestId('38'))
+    fireEvent.click(getByTestId('38'))
 
-		expect(container.innerHTML).toMatch('Loading...')
-	}) */
+    expect(container.innerHTML).toMatch('Loading...')
+});
 
-/* 	it('should navigate to the edit page loaded', async ()=> {
-		const { getByTestId, getByText } = renderWithRouter(<App />)
+it('should navigate to the edit page loaded', async ()=> {
+    const { getByTestId, getByText } = renderWithRouter(<App />)
 
-		fireEvent.click(getByTestId('Posts'))
+    fireEvent.click(getByTestId('Posts'))
 
-		await waitForElement(	() => getByText("Title"));
+    await waitFor(	() => getByText("Title"));
 
-		fireEvent.click(getByTestId('38'))
+    fireEvent.click(getByTestId('38'))
 
-		const edit = await waitForElement(() => getByTestId("Save"))
+    const edit = await waitFor(() => getByTestId("Save"))
 
-		expect(edit).toHaveAttribute('type', 'submit')
-	}, 10000) */
+    expect(edit).toHaveAttribute('type', 'submit')
+}, 10000);
 
 // /categories
 it("should navigate to the categories page loading", ()=> {
@@ -170,7 +170,7 @@ it("should navigate to the categories page loaded", async ()=> {
 
     fireEvent.click(getByTestId("Categories"))
 
-    const posts = await waitForElement(() => getByTestId("About Me"))
+    const posts = await waitFor(() => getByTestId("About Me"))
 
     expect(posts).toHaveClass("Category")
 })
@@ -189,7 +189,7 @@ it("should navigate to the series page loaded", async ()=> {
 
     fireEvent.click(getByTestId("Series"))
 
-    const	series			= await waitForElement(() => getByTestId("Patagonia")),
+    const	series			= await waitFor(() => getByTestId("Patagonia")),
         seriesManage	= getByTestId("Patagonia_manage");
 
     expect(series).toHaveClass("Series")
