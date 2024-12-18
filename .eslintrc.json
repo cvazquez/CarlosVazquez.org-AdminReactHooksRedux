@@ -5,7 +5,7 @@
       "plugin:react/recommended",
       "plugin:jsx-a11y/recommended"
     ],
-    "plugins": ["react", "import", "jsx-a11y", "eslint-plugin-no-inline-styles"],
+    "plugins": ["react", "import", "jsx-a11y", "eslint-plugin-no-inline-styles", "mui-unused-classes"],
     "rules": {
         "max-len": [
           "error",
@@ -65,7 +65,8 @@
           "array": true,
           "object": true
         }],
-        "no-inline-styles/no-inline-styles": [ 1 ]
+        "no-inline-styles/no-inline-styles": [ 1 ],
+        "mui-unused-classes/unused-classes": 1
     },
     "parserOptions": {
       "ecmaVersion": 2021,

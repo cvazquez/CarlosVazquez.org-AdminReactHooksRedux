@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
     gridRootWidth: {
         '& .MuiGrid2-root': {
             width: 'auto',
         },
     },
-});
+}));
 
 const Form = ({
     form,
