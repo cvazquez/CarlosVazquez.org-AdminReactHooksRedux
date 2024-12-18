@@ -1,18 +1,14 @@
 import React from "react";
+import { ListItem, Chip } from "@mui/material";
 
-const	getlistItemDisplay = (key, name, handler) =>
-    <li key={key}>
-        {name}
-        <span
-            className="close"
-            data-name={name}
-            onClick={handler}
-            onKeyDown={handler}
-            role="button"
-            tabIndex={0}>
-            x
-        </span>
-    </li>;
+const	getlistItemDisplay = (key, name, handler) => (
+    <ListItem key={key}>
+        <Chip
+            label={name}
+            onDelete={() => handler(name)}
+        />
+    </ListItem>
+);
 
 const   selectOptionsSequenceFactory	=	(start, end, order="+")	=> {
     let options = [];

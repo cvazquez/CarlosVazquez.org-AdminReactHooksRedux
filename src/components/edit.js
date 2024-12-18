@@ -318,7 +318,6 @@ export default function Edit() {
 
                         tempForm.flickrSets = result.flickrSets;
 
-                        //if(_isMounted) {
                         setAPIResponsesState(state => ({
                             ...state,
                             isLoaded	: true,
@@ -342,13 +341,11 @@ export default function Edit() {
                             flickrSets	: result.flickrSets || []
                         }));
 
-                        //}
                     } else {
                         throw new Error("Result new post response is invalid. Check API response");
                     }
                 },
                 error => {
-                    //_isMounted &&
                     setAPIResponsesState(state => ({
                         ...state,
                         isLoaded	: false,
@@ -359,7 +356,6 @@ export default function Edit() {
                     console.log("No Response from API to retrieve new post", error);
                 }
             ).catch(error => {
-                //_isMounted &&
                 setAPIResponsesState(state => ({
                     ...state,
                     isLoaded	: false,
@@ -422,7 +418,6 @@ export default function Edit() {
     // Set form fields state
     function handleTextUpdate(event) {
         const	fieldName	= event.target.name;
-        event.persist();
 
         setFormState(state => ({
             ...state,
@@ -431,17 +426,15 @@ export default function Edit() {
     }
 
     // Trigger when the user clicks to remove existing Categories applied to the post
-    function handleCategoryClickRemove(event) {
-        const	categoryNamesSelectedDisplay = [],
-            // Remove the clicked on category from the existing list of categories selected
-            categoryNamesSelected = formState.categoryNamesSelected.filter(
-                categoryName => categoryName !== event.currentTarget.dataset.name);
+    function handleCategoryClickRemove(name) {
+        const	categoryNamesSelectedDisplay = [];
 
-        let 	categoriesSelectedLowerCased = [];
-        //categoriesSelectedLowerCased = categories.categoriesSelectedLowerCased.slice(),
+        // Remove the clicked on category from the existing list of categories selected
+        const    categoryNamesSelected = formState.categoryNamesSelected.filter(
+            categoryName => categoryName !== name);
 
         // Then lowercase them for use in category search
-        categoriesSelectedLowerCased = formState.categoryNamesSelected.map(category => category.toLowerCase());
+        const 	categoriesSelectedLowerCased = categoryNamesSelected.map(category => category.toLowerCase());
 
         // Update the displayed list of categories selected
         for(let index in categoryNamesSelected) {
@@ -463,11 +456,10 @@ export default function Edit() {
     }
 
     // User clicks to remove a series
-    function handleSeriesClickRemove(event) {
+    function handleSeriesClickRemove(name) {
         const	seriesSelectedDisplay = [], // temp variable to update series selected displayed to user
             // Update series submitted in form, without the removed series
-            seriesNameSelected = formState.seriesNameSelected.filter(
-                series => series !== event.currentTarget.dataset.name);
+            seriesNameSelected = formState.seriesNameSelected.filter((seriesName) => seriesName !== name);
 
         // if series selected still exists, after removing one, then update the display list, san removed series.
         // Otherwise, the series selected/displayed is now empty.
@@ -482,12 +474,12 @@ export default function Edit() {
         // Update state of series displayed to user and submitted in form
         setSeriesState({
             ...seriesState,
-            seriesSelectedDisplay
+            seriesSelectedDisplay,
         });
 
         setFormState({
             ...formState,
-            seriesNameSelected
+            seriesNameSelected,
         });
     }
 
