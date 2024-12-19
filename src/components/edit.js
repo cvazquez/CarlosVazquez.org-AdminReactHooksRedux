@@ -41,10 +41,7 @@ export default function Edit() {
             seriesById						: [],
             seriesSelectedDisplay			: []
         }),
-        /* [flickr, setFlickr] = useState({
-				// Flickr Photos
-				flickrSets						: []
-			}), */
+
         [formState, setFormState] = useState({
             entryId					: null,
             title					: "",
@@ -94,6 +91,8 @@ export default function Edit() {
             saveDraftStatus					: null
         });
 
+    const [initialContent, setInitialContent] = useState('');
+
     let _isMounted			= useRef(false),
         _isMountedAdd		= useRef(false);
 
@@ -140,6 +139,7 @@ export default function Edit() {
 
                     setAPIResponsesState(data.apiResponse);
                     setFormState(data.form);
+                    setInitialContent(data.form.content);
                     setCategoriesState(state => ({
                         ...state,
                         ...data.categories
@@ -282,7 +282,6 @@ export default function Edit() {
                         }
                     },
                     error => {
-                        //_isMounted &&
                         setAPIResponsesState(state => ({
                             ...state,
                             isLoaded	: false,
@@ -293,7 +292,6 @@ export default function Edit() {
                         console.log("No Response from API to retrieve post", error);
                     }
                 ).catch(error => {
-                    //_isMounted &&
                     setAPIResponsesState(state => ({
                         ...state,
                         isLoaded	: false,
@@ -727,13 +725,15 @@ export default function Edit() {
             return <div>Loading...</div>;
         } else {
             return <>{showDemoMessage(!apiResponsesState.isAdmin)}
-                <Form	form							= {formState}
+                <Form
+                    form							= {formState}
+                    initialContent                  = {initialContent}
 
                     // Handlers
                     handleCategoryInput				= {handleCategoryInput}
                     handleTextUpdate				= {handleTextUpdate}
                     handleSubmit					= {handleSubmit}
-                    handleEditorChange				= {handleEditorChange}
+                    onEditorChange				    = {handleEditorChange}
                     handleSaveDraft					= {handleSaveDraft}
                     handleSeriesSelection			= {handleSeriesSelection}
 

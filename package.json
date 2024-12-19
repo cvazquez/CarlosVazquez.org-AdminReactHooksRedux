@@ -19,7 +19,7 @@
     "@mui/material": "^6.2.0",
     "@mui/styles": "^6.2.1",
     "@reduxjs/toolkit": "^2.4.0",
-    "@tinymce/tinymce-react": "^3.6.1",
+    "@tinymce/tinymce-react": "^5.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",
