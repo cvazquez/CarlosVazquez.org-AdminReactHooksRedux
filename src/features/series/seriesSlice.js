@@ -1,4 +1,4 @@
-import { getOptions } from '../../components/apis/options';
+import { getOptions } from "../../components/apis/options";
 
 const initialState = {
     isLoaded        : false,
@@ -9,20 +9,20 @@ const initialState = {
 
 export default function seriesReducer(state = initialState, action) {
 
-	switch(action.type) {
-		case "series/added" :
-			return {
+    switch(action.type) {
+        case "series/added" :
+            return {
                 ...state,
                 optionsStates   : action.payload.optionsStates,
                 apiStates       : action.payload.apiStates
-			}
-		default:
-			return state
-	}
+            };
+        default:
+            return state;
+    }
 }
 
-export async function fetchSeries(dispatch, getState) {
+export async function fetchSeries(dispatch) {
     const   data = await getOptions("Series", "Series", "series");
 
-	dispatch({ type: 'series/added', payload : data });
+    dispatch({ type: "series/added", payload : data });
 }

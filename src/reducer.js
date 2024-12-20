@@ -5,10 +5,10 @@ import seriesReducer from "./features/series/seriesSlice";
 import postsReducer from "./features/posts/postsSlice";
 
 const rootReducer = combineReducers({
-	postEdits	: postEditsReducer,
-	category	: categoryReducer,
-	series		: seriesReducer,
-	posts		: postsReducer
+    postEdits	: postEditsReducer,
+    category	: categoryReducer,
+    series		: seriesReducer,
+    posts		: postsReducer
 });
 
 export default rootReducer;

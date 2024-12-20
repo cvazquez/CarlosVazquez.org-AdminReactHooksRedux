@@ -1,9 +1,10 @@
-import rootReducer from './reducer';
-import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from "./reducer";
+import { configureStore } from "@reduxjs/toolkit";
 
 const 	store = configureStore({
-	reducer: rootReducer,
-	devTools: process.env.NODE_ENV !== 'production',
+    reducer: rootReducer,
+    // eslint-disable-next-line
+    devTools: process.env.NODE_ENV !== 'production',
 });
 
-export default store
+export default store;

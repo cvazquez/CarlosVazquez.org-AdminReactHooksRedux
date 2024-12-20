@@ -1,15 +1,16 @@
-import { checkAPIResponse } from '../../helpers/api'
+import { checkAPIResponse } from "../../helpers/api";
 
 // Request categories to display and edit
 export function getOptions(name, namePlural, namePluralLower) {
     return new Promise(resolve => {
+    // eslint-disable-next-line
         fetch(`${process.env.REACT_APP_API_URL}/get${namePlural}`)
             .then(res => checkAPIResponse(res))
             .then(
                 result => {
                     if(result[namePluralLower] && Array.isArray(result[namePluralLower])) {
                         const 	optionsByName	= {},
-                                optionsById		= {};
+                            optionsById		= {};
 
                         result[namePluralLower].forEach(item => {
                             // Get a categories id by name
@@ -48,15 +49,12 @@ export function getOptions(name, namePlural, namePluralLower) {
                         error
                     })); */
 
-                    console.log(`No Response from API getting ${name}`, error)
+                    // eslint-disable-next-line no-console
+                    console.log(`No Response from API getting ${name}`, error);
                 }
-            )}).catch(error => {
+            );}).catch(error => {
 
-                /* setAPIResponseState(state => ({
-                    ...state,
-                    error
-                })); */
-
-                console.error("API Request Categories Fetch Error:", error);
-        })
+        // eslint-disable-next-line no-console
+        console.error("API Request Categories Fetch Error:", error);
+    });
 }

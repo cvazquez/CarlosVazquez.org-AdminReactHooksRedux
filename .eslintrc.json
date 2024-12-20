@@ -1,3 +1,88 @@
 {
-    "extends": "react-app"
-}
+    "extends": [
+      "eslint:recommended",
+      "plugin:import/errors",
+      "plugin:react/recommended",
+      "plugin:jsx-a11y/recommended"
+    ],
+    "plugins": ["react", "import", "jsx-a11y", "eslint-plugin-no-inline-styles", "mui-unused-classes"],
+    "rules": {
+        "max-len": [
+          "error",
+          {
+            "code": 120,
+            "ignoreStrings": true,
+            "ignoreTemplateLiterals": true,
+            "ignoreUrls": true,
+            "ignoreTrailingComments": true,
+            "ignoreRegExpLiterals": true
+          }
+        ],
+        "indent": [
+          "error",
+            4,
+          {
+            "SwitchCase": 1
+          }
+        ],
+        "react/jsx-indent": [
+          "error",
+          4
+        ],
+        "react/prop-types": 0,
+        "no-unused-vars": [
+          "error", {
+            "vars": "all", "args": "after-used", "ignoreRestSiblings": false
+          }
+        ],
+        "no-console": [
+          "error"
+        ],
+        "no-restricted-syntax": [
+          0
+        ],
+        "no-undef": [
+          0
+        ],
+        "react/prefer-stateless-function": [
+          1
+        ],
+        "react/jsx-filename-extension": [
+          1,
+          {
+            "extensions": [
+              ".js",
+              ".jsx"
+            ]
+          }
+        ],
+        "max-params": [
+          "error",
+          7
+        ],
+        "semi": ["error", "always"],
+        "prefer-destructuring": ["error", {
+          "array": true,
+          "object": true
+        }],
+        "no-inline-styles/no-inline-styles": [ 1 ],
+        "mui-unused-classes/unused-classes": 1
+    },
+    "parserOptions": {
+      "ecmaVersion": 2021,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "env": {
+      "es6": true,
+      "browser": true,
+      "node": true
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  }
