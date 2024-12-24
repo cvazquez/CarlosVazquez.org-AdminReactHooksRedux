@@ -3,7 +3,6 @@ import { checkAPIResponse } from "../../helpers/api";
 // Request categories to display and edit
 export function getOptions(name, namePlural, namePluralLower) {
     return new Promise(resolve => {
-    // eslint-disable-next-line
         fetch(`${process.env.REACT_APP_API_URL}/get${namePlural}`)
             .then(res => checkAPIResponse(res))
             .then(

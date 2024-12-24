@@ -3,7 +3,6 @@ import { checkAPIResponse } from "../../helpers/api";
 // API request blog posts, to display and edit
 export function getPosts() {
     return new Promise(resolve => {
-    // eslint-disable-next-line
         fetch(`${process.env.REACT_APP_API_URL}/getPosts`)
             .then(res => checkAPIResponse(res))
             .then(

@@ -534,7 +534,6 @@ export default function Edit() {
                 {
                     results.length ?
                         results.map((result, index) => (
-                            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                             <li key			= {index}
                                 data-value	= {result}
                                 data-id		= {index}

@@ -52,7 +52,6 @@ export default function useDeactivateModal(activate = false, title = "", id, ids
 
     // The user confirmation deactivation of the post. Send a request to API to deactivate in DB
     function handleDeleteOKClick() {
-    // eslint-disable-next-line
         fetch(`${process.env.REACT_APP_API_URL}/deactivatePostById/${modal.id}`)
             .then(res => checkAPIResponse(res))
             .then(result => {
